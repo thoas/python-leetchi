@@ -1,0 +1,5 @@
+*.pyc
+*.tmproj
+.DS_Store
+.env
+tests/credentials/*
