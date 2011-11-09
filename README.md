@@ -21,4 +21,4 @@ The data model of python-leetchi is highly inspired by [peewee](https://github.c
 IN THE WILD
 -----------
 
-This library has been developped for the need of [ulule](http://ulule.com).
+This library has been developed for the need of [ulule](http://ulule.com).
