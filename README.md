@@ -16,4 +16,9 @@ See `tests/` directory.
 INSPIRATION
 -----------
 
-The data model of python-leetchi is highly inspired from [peewee](https://github.com/coleifer/peewee).
+The data model of python-leetchi is highly inspired by [peewee](https://github.com/coleifer/peewee).
+
+IN THE WILD
+-----------
+
+This library has been developped for the need of [ulule](http://ulule.com).
