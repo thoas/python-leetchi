@@ -52,6 +52,50 @@ class Wallet(BaseApiModel):
     def __unicode__(self):
         return self.name
 
+class PaymentCard(BaseApiModel):
+    id = PrimaryKeyField(api_name='ID')
+    tag = CharField(api_name='Tag', required=True)
+    owner = ForeignKeyField(User, api_name='UserID', required=True)
+    card_number = CharField(api_name='CardNumber', required=True)
+    redirect_url = CharField(api_name='RedirectURL')
+    return_url = CharField(api_name='ReturnURL', required=True)
+    payment_url = CharField(api_name='PaymentURL')
+
+    class Meta:
+        verbose_name = 'card'
+        verbose_name_plural = 'cards'
+
+class Transfer(BaseApiModel):
+    id = PrimaryKeyField(api_name='ID')
+    tag = CharField(api_name='Tag', required=True)
+
+    creation_date = DateTimeField(api_name='CreationDate')
+    update_date = DateTimeField(api_name='UpdateDate')
+
+    payer = ForeignKeyField(User, api_name='PayerID', required=True)
+    beneficiary = ForeignKeyField(User, api_name='BeneficiaryID', required=True)
+
+    amount = IntegerField(api_name='Amount', required=True)
+
+    payer_wallet = ForeignKeyField(Wallet, api_name='PayerWalletID', required=True)
+    beneficiary_wallet = ForeignKeyField(Wallet, api_name='BeneficiaryWalletID', required=True)
+
+    class Meta:
+        verbose_name = 'transfer'
+        verbose_name_plural = 'transfers'
+
+class TransferRefund(BaseApiModel):
+    id = PrimaryKeyField(api_name='ID')
+    creation_date = DateTimeField(api_name='CreationDate')
+    update_date = DateTimeField(api_name='UpdateDate')
+
+    transfer = ForeignKeyField(Transfer, api_name='TransferID', required=True)
+    user = ForeignKeyField(User, api_name='UserID', required=True)
+
+    class Meta:
+        verbose_name = 'transfer-refund'
+        verbose_name_plural = 'transfer-refunds'
+
 class Contribution(BaseApiModel):
     id = PrimaryKeyField(api_name='ID')
     tag = CharField(api_name='Tag', required=True)
@@ -69,6 +113,7 @@ class Contribution(BaseApiModel):
     return_url = CharField(api_name='ReturnURL', required=True)
     register_mean_of_payment = BooleanField(api_name='RegisterMeanOfPayment')
     error = CharField(api_name='Error')
+    payment_card = ForeignKeyField(PaymentCard, api_name='PaymentCardID')
 
     class Meta:
         verbose_name = 'contribution'
