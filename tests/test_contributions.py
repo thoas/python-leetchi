@@ -1,16 +1,27 @@
 import unittest
 import time
 
-from selenium import selenium
+try:
+    from selenium import selenium
+except ImportError:
+    use_selenium = False
+else:
+    use_selenium = True
 
 from .resources import handler, User, Wallet, Contribution, get_bank_account
 
 class ContributionsTest(unittest.TestCase):
     def setUp(self):
-        self.selenium = selenium("localhost", \
-                                 4444, "*firefox", "http://www.google.com")
+        global use_selenium
 
-        self.selenium.start()
+        if use_selenium:
+            try:
+                self.selenium = selenium("localhost", \
+                                         4444, "*firefox", "http://www.google.com")
+
+                self.selenium.start()
+            except Exception, e:
+                use_selenium = False
 
     def test_create_contribution(self):
         user = User(**{
@@ -27,7 +38,7 @@ class ContributionsTest(unittest.TestCase):
             'tag': 'user',
             'name': 'Mark Zuckerberg wallet',
             'description': 'Wallet of Mark Zuckerberg',
-            'raising_goal_amount': 1200.0,
+            'raising_goal_amount': 1200,
             'users': [user]
         })
 
@@ -47,7 +58,7 @@ class ContributionsTest(unittest.TestCase):
             'tag': 'user',
             'name': 'Bill Gates wallet',
             'description': 'Wallet of Bill Gates',
-            'raising_goal_amount': 15200.0,
+            'raising_goal_amount': 15200,
             'users': [new_user]
         })
 
@@ -57,7 +68,7 @@ class ContributionsTest(unittest.TestCase):
             'tag': 'project',
             'user': user,
             'wallet': new_wallet,
-            'amount': 1000.0,
+            'amount': 1000,
             'return_url': 'http://ulule.com',
             'client_fee_amount': 0,
             'register_mean_of_payment': True
@@ -71,26 +82,27 @@ class ContributionsTest(unittest.TestCase):
         self.assertEqual(contribution.wallet_id, new_wallet.get_pk())
         self.assertEqual(contribution.payment_url is None, False)
 
-        self.selenium.open(contribution.payment_url)
+        if use_selenium:
+            self.selenium.open(contribution.payment_url)
 
-        bank_account = get_bank_account()
+            bank_account = get_bank_account()
 
-        self.selenium.type('//*[@id="number"]', bank_account['number'])
-        self.selenium.type('//*[@name="expirationDate_month"]', bank_account['expiration']['month'])
-        self.selenium.type('//*[@name="expirationDate_year"]', bank_account['expiration']['year'])
-        self.selenium.type('//*[@id="cvv"]', bank_account['cvv'])
+            self.selenium.type('//*[@id="number"]', bank_account['number'])
+            self.selenium.type('//*[@name="expirationDate_month"]', bank_account['expiration']['month'])
+            self.selenium.type('//*[@name="expirationDate_year"]', bank_account['expiration']['year'])
+            self.selenium.type('//*[@id="cvv"]', bank_account['cvv'])
 
-        #self.selenium.click('//*[@id="submitButton"]')
+            #self.selenium.click('//*[@id="submitButton"]')
 
-        time.sleep(10)
+            time.sleep(10)
 
-        contribution = Contribution.get(contribution.get_pk(), handler)
+            contribution = Contribution.get(contribution.get_pk(), handler)
 
-        self.assertEqual(contribution.is_succeeded, True)
-        self.assertEqual(contribution.is_completed, True)
+            self.assertEqual(contribution.is_succeeded, True)
+            self.assertEqual(contribution.is_completed, True)
 
-        wallet = Wallet.get(new_wallet.get_pk(), handler)
+            wallet = Wallet.get(new_wallet.get_pk(), handler)
 
-        self.assertEqual(wallet.collected_amount, 1000.0)
-        self.assertEqual(wallet.amount, 1000.0)
-        self.assertEqual(wallet.spent_amount, 0.0)
+            self.assertEqual(wallet.collected_amount, 1000)
+            self.assertEqual(wallet.amount, 1000)
+            self.assertEqual(wallet.spent_amount, 0)

@@ -19,7 +19,7 @@ class WalletsTest(unittest.TestCase):
             'tag': 'user',
             'name': 'Mark Zuckerberg wallet',
             'description': 'Wallet of Mark Zuckerberg',
-            'raising_goal_amount': 1200.0,
+            'raising_goal_amount': 1200,
             'users': [user]
         }
 
@@ -27,9 +27,9 @@ class WalletsTest(unittest.TestCase):
         wallet.save(handler=handler)
 
         params = dict(wallet_params, **{
-            'collected_amount': 0.0,
-            'amount': 0.0,
-            'spent_amount': 0.0,
+            'collected_amount': 0,
+            'amount': 0,
+            'spent_amount': 0,
             'is_closed': False
         })
 
@@ -59,7 +59,7 @@ class WalletsTest(unittest.TestCase):
             'tag': 'user',
             'name': 'Mark Zuckerberg wallet',
             'description': 'Wallet of Mark Zuckerberg',
-            'raising_goal_amount': 1200.0,
+            'raising_goal_amount': 1200,
             'users': [user]
         })
 
