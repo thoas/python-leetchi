@@ -1,6 +1,7 @@
 from .base import BaseApiModel
 
-from .fields import *
+from .fields import PrimaryKeyField, EmailField, CharField, BooleanField, DateTimeField, \
+        IntegerField, ManyToManyField, ForeignKeyField
 
 class User(BaseApiModel):
     id = PrimaryKeyField(api_name='ID')
@@ -29,13 +30,13 @@ class Wallet(BaseApiModel):
     name = CharField(api_name='Name', required=True)
 
     description = CharField(api_name='Description', required=True)
-    raising_goal_amount = FloatField(api_name='RaisingGoalAmount', required=True)
+    raising_goal_amount = IntegerField(api_name='RaisingGoalAmount', required=True)
     expiration_date = DateTimeField(api_name='ExpirationDate', required=True)
 
-    spent_amount = FloatField(api_name='SpentAmount')
-    amount = FloatField(api_name='Amount')
-    collected_amount = FloatField(api_name='CollectedAmount')
-    remaining_amount = FloatField(api_name='RemainingAmount')
+    spent_amount = IntegerField(api_name='SpentAmount')
+    amount = IntegerField(api_name='Amount')
+    collected_amount = IntegerField(api_name='CollectedAmount')
+    remaining_amount = IntegerField(api_name='RemainingAmount')
     contribution_limit_date = DateTimeField(api_name='ContributionLimitDate')
     is_closed = BooleanField(api_name='IsClosed')
 
@@ -58,9 +59,9 @@ class Contribution(BaseApiModel):
     user = ForeignKeyField(User, api_name='UserID', required=True)
     creation_date = DateTimeField(api_name='CreationDate')
     update_date = DateTimeField(api_name='UpdateDate')
-    amount = FloatField(api_name='Amount', required=True)
-    client_fee_amount = FloatField(api_name='ClientFeeAmount')
-    leetchi_fee_amount = FloatField(api_name='LeetchiFeeAmount')
+    amount = IntegerField(api_name='Amount', required=True)
+    client_fee_amount = IntegerField(api_name='ClientFeeAmount')
+    leetchi_fee_amount = IntegerField(api_name='LeetchiFeeAmount')
     is_succeeded = BooleanField(api_name='IsSucceeded')
     is_completed = BooleanField(api_name='IsCompleted')
     payment_url = CharField(api_name='PaymentURL')
@@ -83,10 +84,10 @@ class Withdrawal(BaseApiModel):
     user = ForeignKeyField(User, api_name='UserID', required=True)
     creation_date = DateTimeField(api_name='CreationDate')
     update_date = DateTimeField(api_name='UpdateDate')
-    amount = FloatField(api_name='Amount', required=True)
-    amount_without_fees = FloatField(api_name='AmountWithoutFees')
-    client_fee_amount = FloatField(api_name='ClientFeeAmount')
-    leetchi_fee_amount = FloatField(api_name='LeetchiFeeAmount')
+    amount = IntegerField(api_name='Amount', required=True)
+    amount_without_fees = IntegerField(api_name='AmountWithoutFees')
+    client_fee_amount = IntegerField(api_name='ClientFeeAmount')
+    leetchi_fee_amount = IntegerField(api_name='LeetchiFeeAmount')
     is_succeeded = BooleanField(api_name='IsSucceeded')
     is_completed = BooleanField(api_name='IsCompleted')
 
@@ -130,7 +131,7 @@ class Operation(BaseApiModel):
 
     user = ForeignKeyField(User, api_name='UserID', required=True)
     wallet = ForeignKeyField(Wallet, api_name='WalletID', required=True)
-    amount = FloatField(api_name='Amount', required=True)
+    amount = IntegerField(api_name='Amount', required=True)
 
     transaction_type = CharField(api_name='TransactionType')
     transaction_id =  IntegerField(api_name='TransactionID')
