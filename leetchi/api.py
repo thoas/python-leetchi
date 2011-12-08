@@ -30,7 +30,7 @@ class LeetchiAPI(object):
     sandbox_host = 'http://api.prod.leetchi.com'
     production_host = 'http://api.leetchi.com'
 
-    def __init__(self, partner_id, private_key, private_key_password, sandbox=False):
+    def __init__(self, partner_id, private_key, private_key_password, sandbox=False, host=None):
         self.partner_id = partner_id
 
         if not os.path.exists(private_key):
@@ -39,10 +39,13 @@ class LeetchiAPI(object):
         self.private_key = private_key
         self.private_key_password = private_key_password
 
-        if sandbox:
-            self.host = self.sandbox_host
+        if not host:
+            if sandbox:
+                self.host = self.sandbox_host
+            else:
+                self.host = self.production_host
         else:
-            self.host = self.production_host
+            self.host = host
 
     def _auth_signature(self, method, url_path, body):
         url_path += '?ts=%d' % int(time.time())
@@ -84,14 +87,14 @@ class LeetchiAPI(object):
             data = json.dumps(data)
 
         url = self._generate_host(url)
-        
+
         logger.info(u'DATA[in -> %s]: %s' % (url, data))
 
         result = requests.request(method, url,
                                   headers=headers,
                                   data=data)
 
-        logger.info(u'DATA[out -> %s]: %s' % (url, unicode(result.content, "utf8")))
+        logger.info(u'DATA[out -> %s]: %s' % (url, result.content))
 
         if result.content:
             try:
@@ -99,5 +102,5 @@ class LeetchiAPI(object):
             except ValueError:
                 logger.error(u'DECODE ERROR: status_code: %s | headers: %s | content: %s' % (result.status_code,
                                                                                              result.headers,
-                                                                                             unicode(result.content, "utf8")))
+                                                                                             result.content))
                 raise DecodeError(result.status_code, result.headers, result.content)
