@@ -100,7 +100,12 @@ class LeetchiAPI(object):
             try:
                 return result, json.loads(result.content)
             except ValueError:
-                logger.error(u'DECODE ERROR: status_code: %s | headers: %s | content: %s' % (result.status_code,
-                                                                                             result.headers,
-                                                                                             result.content))
-                raise DecodeError(result.status_code, result.headers, result.content)
+                self._error(result)
+        else:
+            self._error(result)
+
+    def _error(self, result):
+        logger.error(u'DECODE ERROR: status_code: %s | headers: %s | content: %s' % (result.status_code,
+                                                                                     result.headers,
+                                                                                     result.content))
+        raise DecodeError(result.status_code, result.headers, result.content)
