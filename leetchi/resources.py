@@ -7,6 +7,7 @@ class User(BaseApiModel):
     id = PrimaryKeyField(api_name='ID')
     first_name = CharField(api_name='FirstName', required=True)
     last_name = CharField(api_name='LastName', required=True)
+    password = CharField(api_name='Password', required=True)
     email = EmailField(api_name='Email', required=True)
     tag = CharField(api_name='Tag', required=True)
     can_register_mean_of_payment = BooleanField(api_name='CanRegisterMeanOfPayment')
@@ -15,6 +16,7 @@ class User(BaseApiModel):
     update_date = DateTimeField(api_name='UpdateDate')
     ip_address = CharField(api_name='IP', required=True)
     birthday = CharField(api_name='Birthday')
+    personal_wallet_amount = IntegerField(api_name='PersonalWalletAmount')
 
     class Meta:
         verbose_name = 'user'
