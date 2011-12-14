@@ -15,6 +15,7 @@ class User(BaseApiModel):
     update_date = DateTimeField(api_name='UpdateDate')
     ip_address = CharField(api_name='IP', required=True)
     birthday = CharField(api_name='Birthday')
+    personal_wallet_amount = IntegerField(api_name='PersonalWalletAmount')
 
     class Meta:
         verbose_name = 'user'
