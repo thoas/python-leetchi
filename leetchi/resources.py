@@ -90,6 +90,7 @@ class TransferRefund(BaseApiModel):
     id = PrimaryKeyField(api_name='ID')
     creation_date = DateTimeField(api_name='CreationDate')
     update_date = DateTimeField(api_name='UpdateDate')
+    tag = CharField(api_name='Tag', required=True)
 
     transfer = ForeignKeyField(Transfer, api_name='TransferID', required=True)
     user = ForeignKeyField(User, api_name='UserID', required=True)
