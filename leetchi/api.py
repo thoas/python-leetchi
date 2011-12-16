@@ -94,17 +94,28 @@ class LeetchiAPI(object):
                                   headers=headers,
                                   data=data)
 
-        logger.info(u'DATA[out -> %s]: %s' % (url, result.content))
+        logger.info(u'DATA[out -> %s]: %s - %s | %s' % (url, result.status_code, result.headers, result.content))
 
-        if result.content:
-            try:
-                return result, json.loads(result.content)
-            except ValueError:
-                self._error(result)
+        if result.status_code in (requests.codes.BAD_REQUEST, requests.codes.forbidden, \
+                                  requests.codes.not_allowed, requests.codes.length_required, \
+                                  requests.codes.server_error):
+            self._create_apierror(result)
         else:
-            self._error(result)
+            if result.content:
+                try:
+                    return result, json.loads(result.content)
+                except ValueError:
+                    self._create_decodeerror(result)
+            else:
+                self._create_decodeerror(result)
 
-    def _error(self, result):
+    def _create_apierror(self, result):
+        logger.error(u'API ERROR: status_code: %s | headers: %s | content: %s' % (result.status_code,
+                                                                                  result.headers,
+                                                                                  result.content))
+        raise APIError(result.status_code, result.content)
+
+    def _create_decodeerror(self, result):
         logger.error(u'DECODE ERROR: status_code: %s | headers: %s | content: %s' % (result.status_code,
                                                                                      result.headers,
                                                                                      result.content))
