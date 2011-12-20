@@ -88,13 +88,13 @@ class LeetchiAPI(object):
 
         url = self._generate_host(url)
 
-        logger.info(u'DATA[in -> %s]: %s' % (url, data))
+        logger.info(u'DATA[IN -> %s]\n\t- headers: %s\n\t- content: %s' % (url, headers, data))
 
         result = requests.request(method, url,
                                   headers=headers,
                                   data=data)
 
-        logger.info(u'DATA[out -> %s]: %s - %s | %s' % (url, result.status_code, result.headers, result.content))
+        logger.info(u'DATA[OUT -> %s]\n\t- status_code: %s\n\t- headers: %s\n\t- content: %s' % (url, result.status_code, result.headers, result.content))
 
         if result.status_code in (requests.codes.BAD_REQUEST, requests.codes.forbidden, \
                                   requests.codes.not_allowed, requests.codes.length_required, \
