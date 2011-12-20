@@ -47,8 +47,11 @@ class LeetchiAPI(object):
         else:
             self.host = host
 
-    def _auth_signature(self, method, url_path, body):
-        url_path += '?ts=%d' % int(time.time())
+    def _auth_signature(self, method, url_path, body, timestamp=None):
+        if not timestamp:
+            timestamp = time.time()
+
+        url_path += '?ts=%d' % int(timestamp)
 
         data = self._format_data(method, url_path, body)
 
@@ -78,15 +81,18 @@ class LeetchiAPI(object):
         return '/v1/partner/%s%s' % (self.partner_id, request_uri)
 
     def request(self, method, url, data=None):
+
+        timestamp = time.time()
+
         headers = {
-            'X-Leetchi-Signature': self._auth_signature(method, url, data).replace('\n', ''),
+            'X-Leetchi-Signature': self._auth_signature(method, url, data, timestamp).replace('\n', ''),
             'Content-Type': 'application/json'
         }
 
         if data:
             data = json.dumps(data)
 
-        url = self._generate_host(url)
+        url = self._generate_host(url, timestamp)
 
         logger.info(u'DATA[IN -> %s]\n\t- headers: %s\n\t- content: %s' % (url, headers, data))
 
