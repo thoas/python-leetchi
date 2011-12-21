@@ -112,6 +112,24 @@ class BooleanField(IntegerField):
 class EmailField(CharField):
     pass
 
+class AmountField(IntegerField):
+    def add_to_class(self, klass, name):
+        super(AmountField, self).add_to_class(klass, name)
+
+        self.descriptior = name + '_converted'
+
+        setattr(klass, self.descriptior, AmountDescriptor(name))
+
+class AmountDescriptor(object):
+    def __init__(self, name):
+        self.field_name = name
+
+    def __get__(self, instance, instance_type=None):
+        return getattr(instance, self.field_name) / 100.0
+
+    def __set__(self, instance, value):
+        setattr(instance, self.field_name, value * 100.0)
+
 class ForeignKeyField(IntegerField):
     def __init__(self, to, related_name=None, *args, **kwargs):
         self.to = to

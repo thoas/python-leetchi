@@ -1,7 +1,7 @@
 from .base import BaseApiModel
 
 from .fields import PrimaryKeyField, EmailField, CharField, BooleanField, DateTimeField, \
-        IntegerField, ManyToManyField, ForeignKeyField
+        IntegerField, ManyToManyField, ForeignKeyField, AmountField
 
 class User(BaseApiModel):
     id = PrimaryKeyField(api_name='ID')
@@ -16,7 +16,7 @@ class User(BaseApiModel):
     update_date = DateTimeField(api_name='UpdateDate')
     ip_address = CharField(api_name='IP', required=True)
     birthday = CharField(api_name='Birthday')
-    personal_wallet_amount = IntegerField(api_name='PersonalWalletAmount')
+    personal_wallet_amount = AmountField(api_name='PersonalWalletAmount')
 
     class Meta:
         verbose_name = 'user'
@@ -32,13 +32,13 @@ class Wallet(BaseApiModel):
     name = CharField(api_name='Name', required=True)
 
     description = CharField(api_name='Description', required=True)
-    raising_goal_amount = IntegerField(api_name='RaisingGoalAmount', required=True)
+    raising_goal_amount = AmountField(api_name='RaisingGoalAmount', required=True)
     expiration_date = DateTimeField(api_name='ExpirationDate', required=True)
 
-    spent_amount = IntegerField(api_name='SpentAmount')
-    amount = IntegerField(api_name='Amount')
-    collected_amount = IntegerField(api_name='CollectedAmount')
-    remaining_amount = IntegerField(api_name='RemainingAmount')
+    spent_amount = AmountField(api_name='SpentAmount')
+    amount = AmountField(api_name='Amount')
+    collected_amount = AmountField(api_name='CollectedAmount')
+    remaining_amount = AmountField(api_name='RemainingAmount')
     contribution_limit_date = DateTimeField(api_name='ContributionLimitDate')
     is_closed = BooleanField(api_name='IsClosed')
 
@@ -77,7 +77,7 @@ class Transfer(BaseApiModel):
     payer = ForeignKeyField(User, api_name='PayerID', required=True)
     beneficiary = ForeignKeyField(User, api_name='BeneficiaryID', required=True)
 
-    amount = IntegerField(api_name='Amount', required=True)
+    amount = AmountField(api_name='Amount', required=True)
 
     payer_wallet = ForeignKeyField(Wallet, api_name='PayerWalletID', required=True)
     beneficiary_wallet = ForeignKeyField(Wallet, api_name='BeneficiaryWalletID', required=True)
@@ -106,9 +106,9 @@ class Contribution(BaseApiModel):
     user = ForeignKeyField(User, api_name='UserID', required=True)
     creation_date = DateTimeField(api_name='CreationDate')
     update_date = DateTimeField(api_name='UpdateDate')
-    amount = IntegerField(api_name='Amount', required=True)
-    client_fee_amount = IntegerField(api_name='ClientFeeAmount')
-    leetchi_fee_amount = IntegerField(api_name='LeetchiFeeAmount')
+    amount = AmountField(api_name='Amount', required=True)
+    client_fee_amount = AmountField(api_name='ClientFeeAmount')
+    leetchi_fee_amount = AmountField(api_name='LeetchiFeeAmount')
     is_succeeded = BooleanField(api_name='IsSucceeded')
     is_completed = BooleanField(api_name='IsCompleted')
     payment_url = CharField(api_name='PaymentURL')
@@ -132,10 +132,10 @@ class Withdrawal(BaseApiModel):
     user = ForeignKeyField(User, api_name='UserID', required=True)
     creation_date = DateTimeField(api_name='CreationDate')
     update_date = DateTimeField(api_name='UpdateDate')
-    amount = IntegerField(api_name='Amount', required=True)
-    amount_without_fees = IntegerField(api_name='AmountWithoutFees')
-    client_fee_amount = IntegerField(api_name='ClientFeeAmount')
-    leetchi_fee_amount = IntegerField(api_name='LeetchiFeeAmount')
+    amount = AmountField(api_name='Amount', required=True)
+    amount_without_fees = AmountField(api_name='AmountWithoutFees')
+    client_fee_amount = AmountField(api_name='ClientFeeAmount')
+    leetchi_fee_amount = AmountField(api_name='LeetchiFeeAmount')
     is_succeeded = BooleanField(api_name='IsSucceeded')
     is_completed = BooleanField(api_name='IsCompleted')
 
@@ -179,7 +179,7 @@ class Operation(BaseApiModel):
 
     user = ForeignKeyField(User, api_name='UserID', required=True)
     wallet = ForeignKeyField(Wallet, api_name='WalletID', required=True)
-    amount = IntegerField(api_name='Amount', required=True)
+    amount = AmountField(api_name='Amount', required=True)
 
     transaction_type = CharField(api_name='TransactionType')
     transaction_id =  IntegerField(api_name='TransactionID')
