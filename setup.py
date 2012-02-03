@@ -14,7 +14,7 @@ CLASSIFIERS = [
 KEYWORDS = 'leetchi api rest users wallets contributions'
 
 setup(
-    name='leetchi',
+    name='python-leetchi',
     version=version,
     description='Leetchi API implementation in Python',
     author='Florent Messa',
