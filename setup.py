@@ -26,6 +26,7 @@ setup(
     name='python-leetchi',
     version=version,
     description='Leetchi API implementation in Python',
+    long_description=README + '\n\n' + CHANGES,
     author='Florent Messa',
     author_email='florent.messa@gmail.com',
     url='http://github.com/thoas/python-leetchi',
