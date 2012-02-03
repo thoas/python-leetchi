@@ -1,0 +1,13 @@
+0.2 - 2012-02-03
+================
+
+- Added better support for handling errors.
+- Added new resources: PaymentCard, TransferRefund, Refund.
+- Added **host** optional parameter to LeetchiAPI object.
+- Fix bugs: reuse the timestamp to generate host and auth signature.
+- Added AmountField and its descriptor to convert cts.
+
+0.1 - 2011-11-09
+================
+
+- Initial release

@@ -1,6 +1,15 @@
+import os
 from setuptools import setup, find_packages
 
+root = os.path.abspath(os.path.dirname(__file__))
+
 version = __import__('leetchi').__version__
+
+with open(os.path.join(root, 'README.rst')) as f:
+    README = f.read()
+
+with open(os.path.join(root, 'CHANGES.txt')) as f:
+    CHANGES = f.read()
 
 CLASSIFIERS = [
     'Intended Audience :: Developers',
