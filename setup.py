@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-VERSION = 0.1
+version = __import__('leetchi').__version__
 
 CLASSIFIERS = [
     'Intended Audience :: Developers',
@@ -15,7 +15,7 @@ KEYWORDS = 'leetchi api rest users wallets contributions'
 
 setup(
     name='leetchi',
-    version=VERSION,
+    version=version,
     description='Leetchi API implementation in Python',
     author='Florent Messa',
     author_email='florent.messa@gmail.com',
