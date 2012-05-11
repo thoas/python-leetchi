@@ -3,6 +3,7 @@ from .base import BaseApiModel
 from .fields import PrimaryKeyField, EmailField, CharField, BooleanField, DateTimeField, \
         IntegerField, ManyToManyField, ForeignKeyField, AmountField
 
+
 class User(BaseApiModel):
     id = PrimaryKeyField(api_name='ID')
     first_name = CharField(api_name='FirstName', required=True)
@@ -24,6 +25,7 @@ class User(BaseApiModel):
 
     def __unicode__(self):
         return u'%s %s' % (self.first_name, self.last_name)
+
 
 class Wallet(BaseApiModel):
     id = PrimaryKeyField(api_name='ID')
@@ -54,6 +56,7 @@ class Wallet(BaseApiModel):
     def __unicode__(self):
         return self.name
 
+
 class PaymentCard(BaseApiModel):
     id = PrimaryKeyField(api_name='ID')
     tag = CharField(api_name='Tag', required=True)
@@ -66,6 +69,7 @@ class PaymentCard(BaseApiModel):
     class Meta:
         verbose_name = 'card'
         verbose_name_plural = 'cards'
+
 
 class Transfer(BaseApiModel):
     id = PrimaryKeyField(api_name='ID')
@@ -86,6 +90,7 @@ class Transfer(BaseApiModel):
         verbose_name = 'transfer'
         verbose_name_plural = 'transfers'
 
+
 class TransferRefund(BaseApiModel):
     id = PrimaryKeyField(api_name='ID')
     creation_date = DateTimeField(api_name='CreationDate')
@@ -98,6 +103,7 @@ class TransferRefund(BaseApiModel):
     class Meta:
         verbose_name = 'transfer-refund'
         verbose_name_plural = 'transfer-refunds'
+
 
 class Contribution(BaseApiModel):
     id = PrimaryKeyField(api_name='ID')
@@ -125,6 +131,7 @@ class Contribution(BaseApiModel):
     def is_success(self):
         return self.is_succeeded and self.is_completed
 
+
 class Withdrawal(BaseApiModel):
     id = PrimaryKeyField(api_name='ID')
     tag = CharField(api_name='Tag', required=True)
@@ -150,6 +157,7 @@ class Withdrawal(BaseApiModel):
         verbose_name = 'withdrawal'
         verbose_name_plural = 'withdrawals'
 
+
 class Refund(BaseApiModel):
     id = PrimaryKeyField(api_name='ID')
     tag = CharField(api_name='Tag', required=True)
@@ -171,6 +179,7 @@ class Refund(BaseApiModel):
     def is_success(self):
         return self.is_succeeded and self.is_completed
 
+
 class Operation(BaseApiModel):
     id = PrimaryKeyField(api_name='ID')
     tag = CharField(api_name='Tag', required=True)
@@ -182,7 +191,7 @@ class Operation(BaseApiModel):
     amount = AmountField(api_name='Amount', required=True)
 
     transaction_type = CharField(api_name='TransactionType')
-    transaction_id =  IntegerField(api_name='TransactionID')
+    transaction_id = IntegerField(api_name='TransactionID')
 
     class Meta:
         verbose_name = 'operation'

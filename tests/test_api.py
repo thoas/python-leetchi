@@ -3,9 +3,13 @@ import unittest
 
 from .resources import handler
 
-from leetchi import json
+try:
+    import simplejson as json
+except ImportError:
+    import json
 
 from .settings import API_PARTNER_ID
+
 
 class ApiTest(unittest.TestCase):
     def test_generate_host(self):

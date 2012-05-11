@@ -49,6 +49,7 @@ class Field(object):
             value = self.python_value_callback(value)
         return value
 
+
 class CharField(Field):
     pass
 
@@ -74,6 +75,7 @@ class DateTimeField(Field):
 
         return value
 
+
 class IntegerField(Field):
     def api_value(self, value):
         return self.null_wrapper(super(IntegerField, self).api_value(value), 0)
@@ -81,6 +83,7 @@ class IntegerField(Field):
     def python_value(self, value):
         if value is not None:
             return int(super(IntegerField, self).python_value(value))
+
 
 class FloatField(Field):
     def api_value(self, value):
@@ -90,11 +93,14 @@ class FloatField(Field):
         if value is not None:
             return float(super(FloatField, self).python_value(value))
 
+
 class PrimaryKeyField(IntegerField):
     pass
 
+
 class ListField(Field):
     pass
+
 
 class BooleanField(IntegerField):
     def api_value(self, value):
@@ -109,8 +115,10 @@ class BooleanField(IntegerField):
 
         return bool(value)
 
+
 class EmailField(CharField):
     pass
+
 
 class AmountField(IntegerField):
     def add_to_class(self, klass, name):
@@ -119,6 +127,7 @@ class AmountField(IntegerField):
         self.descriptior = name + '_converted'
 
         setattr(klass, self.descriptior, AmountDescriptor(name))
+
 
 class AmountDescriptor(object):
     def __init__(self, name):
@@ -129,6 +138,7 @@ class AmountDescriptor(object):
 
     def __set__(self, instance, value):
         setattr(instance, self.field_name, value * 100.0)
+
 
 class ForeignKeyField(IntegerField):
     def __init__(self, to, related_name=None, *args, **kwargs):
@@ -164,6 +174,7 @@ class ForeignKeyField(IntegerField):
 
         return value
 
+
 class ForeignRelatedObject(object):
     def __init__(self, to, name):
         self.field_name = name
@@ -190,6 +201,7 @@ class ReverseForeignRelatedObject(object):
 
     def __get__(self, instance, instance_type=None):
         return instance.list(self.related_model)
+
 
 class ManyToManyField(ListField):
     def __init__(self, to, related_name=None, *args, **kwargs):
@@ -227,6 +239,7 @@ class ManyToManyField(ListField):
                 values[i] = value
 
         return values
+
 
 class ManyToManyRelatedObject(object):
     def __init__(self, related_model, name):

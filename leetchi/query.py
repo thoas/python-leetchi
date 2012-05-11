@@ -1,5 +1,6 @@
 from .exceptions import DecodeError
 
+
 class BaseQuery(object):
     def __init__(self, model, method=None):
         self.model = model
@@ -17,6 +18,7 @@ class BaseQuery(object):
 
         return pairs
 
+
 class SelectQuery(BaseQuery):
     def __init__(self, model, *args, **kwargs):
         super(SelectQuery, self).__init__(model, 'GET')
@@ -29,7 +31,6 @@ class SelectQuery(BaseQuery):
             if e.status_code == 404:
                 raise self.model.DoesNotExist('instance %s matching reference %d does not exist' % (self.model._meta.model_name, reference))
         else:
-
             return self.model(**dict(self.parse_result(data), **{'handler': handler}))
 
     def list(self, reference, resource_model, handler):
@@ -37,8 +38,8 @@ class SelectQuery(BaseQuery):
                                        '/%s/%d/%s' % (resource_model._meta.verbose_name_plural, reference, \
                                                       self.model._meta.verbose_name_plural))
 
-
         return [self.model(**dict(self.parse_result(result), **{'handler': handler})) for result in data]
+
 
 class InsertQuery(BaseQuery):
     def __init__(self, model, **kwargs):
@@ -63,6 +64,7 @@ class InsertQuery(BaseQuery):
                                        data=data)
 
         return dict(self.parse_result(data), **{'handler': handler})
+
 
 class UpdateQuery(BaseQuery):
     def __init__(self, model, reference, **kwargs):

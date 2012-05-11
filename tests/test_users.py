@@ -2,6 +2,7 @@ import unittest
 
 from .resources import handler, User
 
+
 class UsersTest(unittest.TestCase):
     def test_create_user(self):
         params = {

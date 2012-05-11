@@ -10,6 +10,7 @@ else:
 
 from .resources import handler, User, Wallet, Contribution, get_bank_account
 
+
 class ContributionsTest(unittest.TestCase):
     def setUp(self):
         global use_selenium
@@ -20,7 +21,7 @@ class ContributionsTest(unittest.TestCase):
                                          4444, "*firefox", "http://www.google.com")
 
                 self.selenium.start()
-            except Exception, e:
+            except Exception:
                 use_selenium = False
 
     def test_create_contribution(self):

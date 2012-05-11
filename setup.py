@@ -37,5 +37,5 @@ setup(
     classifiers=CLASSIFIERS,
     keywords=KEYWORDS,
     tests_require=['nose', 'coverage', 'selenium'],
-    test_suite = "nose.collector"
+    test_suite="nose.collector"
 )

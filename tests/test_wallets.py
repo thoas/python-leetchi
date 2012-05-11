@@ -2,6 +2,7 @@ import unittest
 
 from .resources import handler, User, Wallet
 
+
 class WalletsTest(unittest.TestCase):
     def test_create_wallet(self):
         params = {

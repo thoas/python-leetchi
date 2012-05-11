@@ -8,5 +8,6 @@ handler = LeetchiAPI(API_PARTNER_ID, API_PRIVATE_KEY, API_PRIVATE_KEY_PASSWORD, 
 
 from leetchi.resources import *
 
+
 def get_bank_account():
     return API_BANK_ACCOUNTS[random.randint(0, len(API_BANK_ACCOUNTS) - 1)]

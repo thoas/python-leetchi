@@ -19,7 +19,7 @@ class BaseModelOptions(object):
         self.model_class = model_class
 
     def get_sorted_fields(self):
-        return sorted(self.fields.items(), key=lambda (k,v): (k == self.pk_name and 1 or 2, v._order))
+        return sorted(self.fields.items(), key=lambda (k, v): (k == self.pk_name and 1 or 2, v._order))
 
     def get_field_names(self):
         return [f[0] for f in self.get_sorted_fields()]
