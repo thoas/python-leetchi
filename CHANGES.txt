@@ -1,3 +1,9 @@
+0.2.1 - 2012-06-20
+==================
+
+- Added **type** attribute in Contribution resource to set the type of the
+transaction.
+
 0.2 - 2012-02-03
 ================
 
