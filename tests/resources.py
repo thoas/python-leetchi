@@ -2,7 +2,7 @@ import random
 
 from settings import *
 
-from leetchi import LeetchiAPI
+from leetchi.api import LeetchiAPI
 
 handler = LeetchiAPI(API_PARTNER_ID, API_PRIVATE_KEY, API_PRIVATE_KEY_PASSWORD, sandbox=API_USE_SANDBOX)
 
