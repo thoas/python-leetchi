@@ -1,3 +1,8 @@
+0.2.3 - 2012-07-23
+==================
+
+- Added time between the beginning and the end of the requests in logger.
+
 0.2.2 - 2012-06-28
 ==================
 
