@@ -123,7 +123,8 @@ class Contribution(BaseApiModel):
     register_mean_of_payment = BooleanField(api_name='RegisterMeanOfPayment')
     error = CharField(api_name='Error')
     payment_card = ForeignKeyField(PaymentCard, api_name='PaymentCardID')
-    type = CharField(api_name='type') # type of transaction: payline, ogone
+    type = CharField(api_name='Type') # type of transaction: payline, ogone
+    culture = CharField(api_name='Culture')
 
     class Meta:
         verbose_name = 'contribution'
