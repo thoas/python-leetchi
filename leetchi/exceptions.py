@@ -15,6 +15,6 @@ class DecodeError(APIError):
         self.status_code = status_code
 
     def __repr__(self):
-        return "status_code: %s, headers: %s, content: <%s>" % (self.status_code, \
-                                                                self.headers, \
+        return "status_code: %s, headers: %s, content: <%s>" % (self.status_code,
+                                                                self.headers,
                                                                 self.body)

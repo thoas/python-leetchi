@@ -1,7 +1,7 @@
 # see: http://hustoknow.blogspot.com/2011/01/m2crypto-and-facebook-python-sdk.html
 import urllib
 orig = urllib.URLopener.open_https
-import M2Crypto.m2urllib
+import M2Crypto.m2urllib  # noqa
 urllib.URLopener.open_https = orig   # uncomment this line back and forth
 from M2Crypto import EVP
 

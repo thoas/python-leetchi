@@ -1,12 +1,12 @@
 import random
 
-from settings import *
+from settings import *  # noqa
 
 from leetchi.api import LeetchiAPI
 
 handler = LeetchiAPI(API_PARTNER_ID, API_PRIVATE_KEY, API_PRIVATE_KEY_PASSWORD, sandbox=API_USE_SANDBOX)
 
-from leetchi.resources import *
+from leetchi.resources import *  # noqa
 
 
 def get_bank_account():

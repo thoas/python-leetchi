@@ -17,7 +17,7 @@ class ContributionsTest(unittest.TestCase):
 
         if use_selenium:
             try:
-                self.selenium = selenium("localhost", \
+                self.selenium = selenium("localhost",
                                          4444, "*firefox", "http://www.google.com")
 
                 self.selenium.start()

@@ -76,9 +76,9 @@ class BaseApiModel(object):
             setattr(self, k, v)
 
     def __eq__(self, other):
-        return other.__class__ == self.__class__ and \
-               self.get_pk() and \
-               other.get_pk() == self.get_pk()
+        return (other.__class__ == self.__class__ and
+                self.get_pk() and
+                other.get_pk() == self.get_pk())
 
     def save(self, handler):
         field_dict = self.get_field_dict()

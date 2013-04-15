@@ -25,7 +25,7 @@ class SelectQuery(BaseQuery):
 
     def get(self, reference, handler):
         try:
-            result, data = handler.request(self.method, \
+            result, data = handler.request(self.method,
                                            '/%s/%d' % (self.model._meta.verbose_name_plural, reference))
         except DecodeError, e:
             if e.status_code == 404:
@@ -34,11 +34,11 @@ class SelectQuery(BaseQuery):
             return self.model(**dict(self.parse_result(data), **{'handler': handler}))
 
     def list(self, reference, resource_model, handler):
-        result, data = handler.request(self.method, \
-                                       '/%s/%d/%s' % (resource_model._meta.verbose_name_plural, reference, \
+        result, data = handler.request(self.method,
+                                       '/%s/%d/%s' % (resource_model._meta.verbose_name_plural, reference,
                                                       self.model._meta.verbose_name_plural))
 
-        return [self.model(**dict(self.parse_result(result), **{'handler': handler})) for result in data]
+        return [self.model(**dict(self.parse_result(entry), **{'handler': handler})) for entry in data]
 
 
 class InsertQuery(BaseQuery):
@@ -59,8 +59,8 @@ class InsertQuery(BaseQuery):
     def execute(self, handler):
         data = self.parse_insert()
 
-        result, data = handler.request(self.method, \
-                                       '/%s/' % self.model._meta.verbose_name_plural, \
+        result, data = handler.request(self.method,
+                                       '/%s/' % self.model._meta.verbose_name_plural,
                                        data=data)
 
         return dict(self.parse_result(data), **{'handler': handler})
@@ -85,8 +85,8 @@ class UpdateQuery(BaseQuery):
     def execute(self, handler):
         data = self.parse_update()
 
-        result, data = handler.request(self.method, \
-                                       '/%s/%d/' % (self.model._meta.verbose_name_plural, self.reference), \
+        result, data = handler.request(self.method,
+                                       '/%s/%d/' % (self.model._meta.verbose_name_plural, self.reference),
                                        data=data)
 
         return self.parse_result(data)
