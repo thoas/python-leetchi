@@ -1,10 +1,14 @@
 import random
 
-from settings import *  # noqa
+import settings
 
 from leetchi.api import LeetchiAPI
 
-handler = LeetchiAPI(API_PARTNER_ID, API_PRIVATE_KEY, API_PRIVATE_KEY_PASSWORD, sandbox=API_USE_SANDBOX)
+handler = LeetchiAPI(settings.API_PARTNER_ID,
+                     settings.API_PRIVATE_KEY,
+                     settings.API_PRIVATE_KEY_PASSWORD,
+                     sandbox=settings.API_USE_SANDBOX,
+                     host=settings.API_HOST)
 
 from leetchi.resources import *  # noqa
 

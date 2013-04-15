@@ -1,3 +1,12 @@
+0.2.5 - 2013-04-15
+==================
+
+- Signals handling via blinker
+- Added **request_finished** signal to add a callback when a request is finished
+- Added **request_started** signal to add a callback when a request is starting
+- Added **pre_save** signal to add a callback when a new resource will be created
+- Added **post_save** signal to add a callback when a new resource is created
+
 0.2.4 - 2012-07-24
 ==================
 

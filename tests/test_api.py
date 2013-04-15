@@ -17,7 +17,7 @@ class ApiTest(unittest.TestCase):
 
         self.assertEqual(handler._generate_host('/users/'),
                          '%(host)s/v1/partner/%(partner_id)s/users/?ts=%(timestamp)s' % {
-                             'host': handler.sandbox_host,
+                             'host': handler.host,
                              'partner_id': API_PARTNER_ID,
                              'timestamp': timestamp
                          })

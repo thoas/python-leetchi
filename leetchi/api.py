@@ -13,6 +13,8 @@ from .exceptions import APIError, DecodeError
 
 from .utils import openssl_pkey_get_private, openssl_sign
 
+from .signals import request_finished, request_started
+
 logger = logging.getLogger('leetchi')
 
 
@@ -98,9 +100,13 @@ class LeetchiAPI(object):
 
         ts = time.time()
 
+        request_started.send(url=url, data=data, headers=headers, method=method)
+
         result = requests.request(method, url,
                                   headers=headers,
                                   data=data)
+
+        request_finished.send(url=url, data=data, headers=headers, method=method, result=result)
 
         te = time.time()
 

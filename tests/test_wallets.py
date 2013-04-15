@@ -31,7 +31,7 @@ class WalletsTest(unittest.TestCase):
             'collected_amount': 0,
             'amount': 0,
             'spent_amount': 0,
-            'is_closed': False
+            'is_closed': True
         })
 
         for k, v in params.items():

@@ -1,5 +1,8 @@
 from .fields import PrimaryKeyField, Field
+
 from .query import UpdateQuery, InsertQuery, SelectQuery
+
+from .signals import pre_save, post_save
 
 
 class DoesNotExist(Exception):
@@ -80,10 +83,17 @@ class BaseApiModel(object):
                 self.get_pk() and
                 other.get_pk() == self.get_pk())
 
-    def save(self, handler):
+    def save(self, handler, cls=None):
         field_dict = self.get_field_dict()
 
         field_dict.pop(self._meta.pk_name)
+
+        if cls is None:
+            cls = self.__class__
+
+        created = False
+
+        pre_save.send(cls, instance=self)
 
         if self.get_pk():
             update = self.update(
@@ -94,6 +104,10 @@ class BaseApiModel(object):
         else:
             insert = self.insert(**field_dict)
             result = insert.execute(handler)
+
+            created = True
+
+        post_save.send(cls, instance=self, created=created)
 
         for key, value in result.items():
             setattr(self, key, value)
