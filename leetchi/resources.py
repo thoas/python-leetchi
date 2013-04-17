@@ -105,6 +105,27 @@ class TransferRefund(BaseApiModel):
         verbose_name_plural = 'transfer-refunds'
 
 
+class WithdrawalContribution(BaseApiModel):
+    id = PrimaryKeyField(api_name='ID')
+    creation_date = DateTimeField(api_name='CreationDate')
+    update_date = DateTimeField(api_name='UpdateDate')
+    tag = CharField(api_name='Tag', required=True)
+    user = ForeignKeyField(User, api_name='UserID', required=True)
+    wallet = ForeignKeyField(Wallet, api_name='WalletID')
+    status = CharField(api_name='Status')
+    amount = AmountField(api_name='Amount')
+    amount_declared = AmountField(api_name='Amount', required=True)
+    generated_reference = CharField(api_name='GeneratedReference')
+    commentary = CharField(api_name='Commentary')
+    bank_account_owner = CharField(api_name='BankAccountOwner', required=True)
+    bank_account_iban = CharField(api_name='BankAccountIBAN', required=True)
+    bank_account_bic = CharField(api_name='BankAccountBIC', required=True)
+
+    class Meta:
+        verbose_name = 'contributions-by-withdrawal'
+        verbose_name_plural = 'contributions-by-withdrawal'
+
+
 class Contribution(BaseApiModel):
     id = PrimaryKeyField(api_name='ID')
     tag = CharField(api_name='Tag', required=True)
