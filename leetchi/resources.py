@@ -114,7 +114,7 @@ class WithdrawalContribution(BaseApiModel):
     wallet = ForeignKeyField(Wallet, api_name='WalletID')
     status = CharField(api_name='Status')
     amount = AmountField(api_name='Amount')
-    amount_declared = AmountField(api_name='Amount', required=True)
+    amount_declared = AmountField(api_name='AmountDeclared', required=True)
     generated_reference = CharField(api_name='GeneratedReference')
     commentary = CharField(api_name='Commentary')
     bank_account_owner = CharField(api_name='BankAccountOwner', required=True)
