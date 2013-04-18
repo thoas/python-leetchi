@@ -1,4 +1,6 @@
-from .fields import PrimaryKeyField, Field
+from copy import deepcopy
+
+from .fields import PrimaryKeyField, FieldDescriptor, Field
 
 from .query import UpdateQuery, InsertQuery, SelectQuery
 
@@ -35,28 +37,68 @@ class BaseModelOptions(object):
             return self.fields[name]
         raise AttributeError('Field named %s not found' % name)
 
+    def __contains__(self, k):
+        return k in self.options
+
+    def __setitem__(self, k, value):
+        self.options[k] = value
+
+    def __delitem__(self, k):
+        if not k in self.options:
+            raise KeyError('%s does not exists' % k)
+
+        del self.options[k]
+
 
 class ApiObjectBase(type):
+    inheritable_options = ['verbose_name', 'verbose_name_plural']
+
     def __new__(cls, name, bases, attrs):
-        cls = type.__new__(cls, name, bases, attrs)
+        if not bases:
+            return super(ApiObjectBase, cls).__new__(cls, name, bases, attrs)
 
+        meta_options = {}
         meta = attrs.pop('Meta', None)
-
-        attr_dict = {}
-
         if meta:
-            attr_dict = meta.__dict__
+            meta_options.update((k, v) for k, v in meta.__dict__.items() if not k.startswith('_'))
 
-        _meta = BaseModelOptions(cls, attr_dict)
+        orig_primary_key = None
 
+        for b in bases:
+            if not hasattr(b, '_meta'):
+                continue
+
+            base_meta = getattr(b, '_meta')
+            for (k, v) in base_meta.__dict__.items():
+                if k in cls.inheritable_options and k not in meta_options:
+                    meta_options[k] = v
+
+            for (name, attr) in b.__dict__.items():
+                if not isinstance(attr, FieldDescriptor) or attr in attrs:
+                    continue
+
+                attrs[name] = deepcopy(attr.field)
+
+                if isinstance(attr.field, PrimaryKeyField) and not orig_primary_key:
+                    orig_primary_key = deepcopy(attr.field)
+
+        cls = super(ApiObjectBase, cls).__new__(cls, name, bases, attrs)
+
+        _meta = BaseModelOptions(cls, meta_options)
         setattr(cls, '_meta', _meta)
 
         for name, attr in cls.__dict__.items():
-            if isinstance(attr, Field):
-                attr.add_to_class(cls, name)
-                _meta.fields[attr.name] = attr
-                if isinstance(attr, PrimaryKeyField):
-                    _meta.pk_name = attr.name
+            if not isinstance(attr, Field):
+                continue
+
+            attr.add_to_class(cls, name)
+            _meta.fields[attr.name] = attr
+
+            if isinstance(attr, PrimaryKeyField):
+                orig_primary_key = attr
+
+        if not orig_primary_key is None:
+            _meta.pk_name = orig_primary_key.name
 
         _meta.model_name = cls.__name__
 

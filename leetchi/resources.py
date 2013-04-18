@@ -4,17 +4,20 @@ from .fields import (PrimaryKeyField, EmailField, CharField, BooleanField, DateT
                      IntegerField, ManyToManyField, ForeignKeyField, AmountField)
 
 
-class User(BaseApiModel):
+class BaseModel(BaseApiModel):
     id = PrimaryKeyField(api_name='ID')
+    tag = CharField(api_name='Tag')
+    creation_date = DateTimeField(api_name='CreationDate')
+    update_date = DateTimeField(api_name='UpdateDate')
+
+
+class User(BaseModel):
     first_name = CharField(api_name='FirstName', required=True)
     last_name = CharField(api_name='LastName', required=True)
     password = CharField(api_name='Password', required=True)
     email = EmailField(api_name='Email', required=True)
-    tag = CharField(api_name='Tag', required=True)
     can_register_mean_of_payment = BooleanField(api_name='CanRegisterMeanOfPayment')
     has_register_mean_of_payment = BooleanField(api_name='HasRegisterMeanOfPayment')
-    creation_date = DateTimeField(api_name='CreationDate')
-    update_date = DateTimeField(api_name='UpdateDate')
     ip_address = CharField(api_name='IP', required=True)
     birthday = CharField(api_name='Birthday')
     personal_wallet_amount = AmountField(api_name='PersonalWalletAmount')
@@ -27,10 +30,7 @@ class User(BaseApiModel):
         return u'%s %s' % (self.first_name, self.last_name)
 
 
-class Wallet(BaseApiModel):
-    id = PrimaryKeyField(api_name='ID')
-
-    tag = CharField(api_name='Tag')
+class Wallet(BaseModel):
     name = CharField(api_name='Name', required=True)
 
     description = CharField(api_name='Description', required=True)
@@ -43,9 +43,6 @@ class Wallet(BaseApiModel):
     remaining_amount = AmountField(api_name='RemainingAmount')
     contribution_limit_date = DateTimeField(api_name='ContributionLimitDate')
     is_closed = BooleanField(api_name='IsClosed')
-
-    creation_date = DateTimeField(api_name='CreationDate')
-    update_date = DateTimeField(api_name='UpdateDate')
 
     users = ManyToManyField(User, api_name='Owners')
 
@@ -71,13 +68,7 @@ class PaymentCard(BaseApiModel):
         verbose_name_plural = 'cards'
 
 
-class Transfer(BaseApiModel):
-    id = PrimaryKeyField(api_name='ID')
-    tag = CharField(api_name='Tag', required=True)
-
-    creation_date = DateTimeField(api_name='CreationDate')
-    update_date = DateTimeField(api_name='UpdateDate')
-
+class Transfer(BaseModel):
     payer = ForeignKeyField(User, api_name='PayerID', required=True)
     beneficiary = ForeignKeyField(User, api_name='BeneficiaryID', required=True)
 
@@ -91,12 +82,7 @@ class Transfer(BaseApiModel):
         verbose_name_plural = 'transfers'
 
 
-class TransferRefund(BaseApiModel):
-    id = PrimaryKeyField(api_name='ID')
-    creation_date = DateTimeField(api_name='CreationDate')
-    update_date = DateTimeField(api_name='UpdateDate')
-    tag = CharField(api_name='Tag', required=True)
-
+class TransferRefund(BaseModel):
     transfer = ForeignKeyField(Transfer, api_name='TransferID', required=True)
     user = ForeignKeyField(User, api_name='UserID', required=True)
 
@@ -105,11 +91,7 @@ class TransferRefund(BaseApiModel):
         verbose_name_plural = 'transfer-refunds'
 
 
-class WithdrawalContribution(BaseApiModel):
-    id = PrimaryKeyField(api_name='ID')
-    creation_date = DateTimeField(api_name='CreationDate')
-    update_date = DateTimeField(api_name='UpdateDate')
-    tag = CharField(api_name='Tag', required=True)
+class WithdrawalContribution(BaseModel):
     user = ForeignKeyField(User, api_name='UserID', required=True)
     wallet = ForeignKeyField(Wallet, api_name='WalletID')
     status = CharField(api_name='Status')
@@ -126,13 +108,9 @@ class WithdrawalContribution(BaseApiModel):
         verbose_name_plural = 'contributions-by-withdrawal'
 
 
-class Contribution(BaseApiModel):
-    id = PrimaryKeyField(api_name='ID')
-    tag = CharField(api_name='Tag', required=True)
+class Contribution(BaseModel):
     wallet = ForeignKeyField(Wallet, api_name='WalletID', required=True)
     user = ForeignKeyField(User, api_name='UserID', required=True)
-    creation_date = DateTimeField(api_name='CreationDate')
-    update_date = DateTimeField(api_name='UpdateDate')
     amount = AmountField(api_name='Amount', required=True)
     client_fee_amount = AmountField(api_name='ClientFeeAmount')
     leetchi_fee_amount = AmountField(api_name='LeetchiFeeAmount')
@@ -155,13 +133,9 @@ class Contribution(BaseApiModel):
         return self.is_succeeded and self.is_completed
 
 
-class Withdrawal(BaseApiModel):
-    id = PrimaryKeyField(api_name='ID')
-    tag = CharField(api_name='Tag', required=True)
+class Withdrawal(BaseModel):
     wallet = ForeignKeyField(Wallet, api_name='WalletID', required=True)
     user = ForeignKeyField(User, api_name='UserID', required=True)
-    creation_date = DateTimeField(api_name='CreationDate')
-    update_date = DateTimeField(api_name='UpdateDate')
     amount = AmountField(api_name='Amount', required=True)
     amount_without_fees = AmountField(api_name='AmountWithoutFees')
     client_fee_amount = AmountField(api_name='ClientFeeAmount')
@@ -181,12 +155,7 @@ class Withdrawal(BaseApiModel):
         verbose_name_plural = 'withdrawals'
 
 
-class Refund(BaseApiModel):
-    id = PrimaryKeyField(api_name='ID')
-    tag = CharField(api_name='Tag', required=True)
-    creation_date = DateTimeField(api_name='CreationDate')
-    update_date = DateTimeField(api_name='UpdateDate')
-
+class Refund(BaseModel):
     user = ForeignKeyField(User, api_name='UserID', required=True)
     contribution = ForeignKeyField(Contribution, api_name='ContributionID', required=True)
 
@@ -203,12 +172,7 @@ class Refund(BaseApiModel):
         return self.is_succeeded and self.is_completed
 
 
-class Operation(BaseApiModel):
-    id = PrimaryKeyField(api_name='ID')
-    tag = CharField(api_name='Tag', required=True)
-    creation_date = DateTimeField(api_name='CreationDate')
-    update_date = DateTimeField(api_name='UpdateDate')
-
+class Operation(BaseModel):
     user = ForeignKeyField(User, api_name='UserID', required=True)
     wallet = ForeignKeyField(Wallet, api_name='WalletID', required=True)
     amount = AmountField(api_name='Amount', required=True)

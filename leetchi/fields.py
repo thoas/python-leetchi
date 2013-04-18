@@ -3,6 +3,20 @@ import time
 import datetime
 
 
+class FieldDescriptor(object):
+    def __init__(self, field):
+        self.field = field
+        self.att_name = self.field.name
+
+    def __get__(self, instance, instance_type=None):
+        if instance is not None:
+            return instance._data.get(self.att_name)
+        return self.field
+
+    def __set__(self, instance, value):
+        instance._data[self.att_name] = value
+
+
 class Field(object):
     default = None
     _field_counter = 0
@@ -32,7 +46,9 @@ class Field(object):
         self.model = klass
         self.api_name = self.api_name or re.sub('_+', ' ', name).title()
 
-        setattr(klass, name, None)
+        klass._meta.fields[self.name] = self
+
+        setattr(klass, name, FieldDescriptor(self))
 
     def null_wrapper(self, value, default=None):
         if (self.null and not value) or not default:
