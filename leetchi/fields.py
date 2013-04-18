@@ -11,6 +11,7 @@ class FieldDescriptor(object):
     def __get__(self, instance, instance_type=None):
         if instance is not None:
             return instance._data.get(self.att_name)
+
         return self.field
 
     def __set__(self, instance, value):

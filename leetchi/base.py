@@ -17,6 +17,7 @@ class BaseModelOptions(object):
         self.fields = {}
         self.options = options or {}
         self.reverse_relations = {}
+        self.defaults = {}
 
         for k, v in self.options.items():
             setattr(self, k, v)
@@ -48,6 +49,15 @@ class BaseModelOptions(object):
             raise KeyError('%s does not exists' % k)
 
         del self.options[k]
+
+    def get_default_dict(self):
+        dd = {}
+        for field, default in self.defaults.items():
+            if callable(default):
+                dd[field.name] = default()
+            else:
+                dd[field.name] = default
+        return dd
 
 
 class ApiObjectBase(type):
@@ -85,7 +95,8 @@ class ApiObjectBase(type):
         cls = super(ApiObjectBase, cls).__new__(cls, name, bases, attrs)
 
         _meta = BaseModelOptions(cls, meta_options)
-        setattr(cls, '_meta', _meta)
+        cls._meta = _meta
+        cls._data = None
 
         for name, attr in cls.__dict__.items():
             if not isinstance(attr, Field):
@@ -117,6 +128,8 @@ class BaseApiModel(object):
     __metaclass__ = ApiObjectBase
 
     def __init__(self, *args, **kwargs):
+        self._data = self._meta.get_default_dict()
+
         for k, v in kwargs.items():
             setattr(self, k, v)
 
