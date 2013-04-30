@@ -1,5 +1,7 @@
 import unittest
 
+from datetime import date
+
 from .resources import handler, User
 
 
@@ -10,7 +12,8 @@ class UsersTest(unittest.TestCase):
             'last_name': 'Zuckerberg',
             'email': 'mark@leetchi.com',
             'ip_address': '127.0.0.1',
-            'tag': 'custom_information'
+            'tag': 'custom_information',
+            'birthday': date.today()
         }
         user = User(**params)
 

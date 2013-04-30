@@ -96,14 +96,26 @@ class DateTimeField(Field):
         return value
 
 
-class DateField(DateTimeField):
+class DateField(Field):
     def python_value(self, value):
         value = super(DateField, self).python_value(value)
 
-        if value is None:
-            return value
+        if isinstance(value, basestring):
+            value = value.rsplit('.', 1)[0]
+            value = datetime.date(*time.strptime(value, '%Y-%m-%d')[:6])
 
-        return value.date()
+        if isinstance(value, int):
+            value = datetime.date.fromtimestamp(value)
+
+        return value
+
+    def api_value(self, value):
+        value = super(DateField, self).api_value(value)
+
+        if isinstance(value, datetime.date):
+            value = int(time.mktime(value.timetuple()))
+
+        return value
 
 
 class IntegerField(Field):
