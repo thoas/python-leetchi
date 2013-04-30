@@ -1,3 +1,9 @@
+0.2.8 - 2013-04-30
+==================
+
+- Add DateField for User.birthday attribute
+- Add choices and default attributes to Field class
+
 0.2.7 - 2013-04-18
 ==================
 
@@ -42,7 +48,7 @@ used in payment.
 ==================
 
 - Added **type** attribute in Contribution resource to set the type of the
-transaction.
+transacti n.
 
 0.2 - 2012-02-03
 ================
