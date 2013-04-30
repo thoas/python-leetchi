@@ -21,6 +21,7 @@ def openssl_sign(data, key):
     return key.sign_final()
 
 
+# This code belongs to https://github.com/carljm/django-model-utils
 class Choices(object):
     """
     A class to encapsulate handy functionality for lists of choices
