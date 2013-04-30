@@ -1,7 +1,11 @@
 from .base import BaseApiModel
 
-from .fields import (PrimaryKeyField, EmailField, CharField, BooleanField, DateTimeField,
-                     IntegerField, ManyToManyField, ForeignKeyField, AmountField)
+from .fields import (PrimaryKeyField, EmailField, CharField,
+                     BooleanField, DateTimeField, DateField,
+                     IntegerField, ManyToManyField,
+                     ForeignKeyField, AmountField)
+
+from .utils import Choices
 
 
 class BaseModel(BaseApiModel):
@@ -12,6 +16,11 @@ class BaseModel(BaseApiModel):
 
 
 class User(BaseModel):
+    TYPE_CHOICES = Choices(
+        ('NATURAL_PERSON', 'natural', 'Natural person'),
+        ('LEGAL_PERSONALITY', 'legal', 'Legal personality')
+    )
+
     first_name = CharField(api_name='FirstName', required=True)
     last_name = CharField(api_name='LastName', required=True)
     password = CharField(api_name='Password', required=True)
@@ -19,7 +28,10 @@ class User(BaseModel):
     can_register_mean_of_payment = BooleanField(api_name='CanRegisterMeanOfPayment')
     has_register_mean_of_payment = BooleanField(api_name='HasRegisterMeanOfPayment')
     ip_address = CharField(api_name='IP', required=True)
-    birthday = CharField(api_name='Birthday')
+    birthday = DateField(api_name='Birthday')
+    nationality = DateField(api_name='Nationality', required=True)
+    type = CharField(api_name='PersonType', required=True,
+                     choices=TYPE_CHOICES, default=TYPE_CHOICES.natural)
     personal_wallet_amount = AmountField(api_name='PersonalWalletAmount')
 
     class Meta:

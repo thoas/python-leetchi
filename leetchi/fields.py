@@ -28,6 +28,7 @@ class Field(object):
 
     def __init__(self, null=False, api_name=None,
                  help_text=None, api_value_callback=None,
+                 choices=None, default=None,
                  python_value_callback=None, *args, **kwargs):
         self.null = null
         self.attributes = self.get_attributes()
@@ -37,6 +38,8 @@ class Field(object):
         self.python_value_callback = python_value_callback
         self.help_text = help_text
         self.required = kwargs.get('required', False)
+        self.choices = choices
+        self.default = default
 
         self.attributes.update(kwargs)
 
@@ -91,6 +94,16 @@ class DateTimeField(Field):
             value = int(time.mktime(value.timetuple()))
 
         return value
+
+
+class DateField(DateTimeField):
+    def python_value(self, value):
+        value = super(DateField, self).python_value(value)
+
+        if value is None:
+            return value
+
+        return value.date()
 
 
 class IntegerField(Field):

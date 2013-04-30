@@ -50,6 +50,13 @@ class BaseModelOptions(object):
 
         del self.options[k]
 
+    def prepared(self):
+        for field in self.fields.values():
+            if field.default is None:
+                continue
+
+            self.defaults[field] = field.default
+
     def get_default_dict(self):
         dd = {}
         for field, default in self.defaults.items():
@@ -120,6 +127,7 @@ class ApiObjectBase(type):
         exception_class = type('%sDoesNotExist' % _meta.model_name, (DoesNotExist,), {})
 
         cls.DoesNotExist = exception_class
+        cls._meta.prepared()
 
         return cls
 
@@ -139,8 +147,8 @@ class BaseApiModel(object):
                 other.get_pk() == self.get_pk())
 
     def save(self, handler, cls=None):
-        field_dict = self.get_field_dict()
-
+        field_dict = dict(self._data)
+        field_dict.update(self.get_field_dict())
         field_dict.pop(self._meta.pk_name)
 
         if cls is None:
