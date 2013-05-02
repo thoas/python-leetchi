@@ -71,8 +71,15 @@ class ApiObjectBase(type):
     inheritable_options = ['verbose_name', 'verbose_name_plural']
 
     def __new__(cls, name, bases, attrs):
-        if not bases:
-            return super(ApiObjectBase, cls).__new__(cls, name, bases, attrs)
+        super_new = super(ApiObjectBase, cls).__new__
+        parents = [b for b in bases if isinstance(b, ApiObjectBase)]
+
+        if not parents:
+            # If this isn't a subclass of Model, don't do anything special.
+            return super_new(cls, name, bases, attrs)
+
+        module = attrs.pop('__module__')
+        new_class = super_new(cls, name, bases, {'__module__': module})
 
         meta_options = {}
         meta = attrs.pop('Meta', None)
@@ -118,7 +125,7 @@ class ApiObjectBase(type):
         if not orig_primary_key is None:
             _meta.pk_name = orig_primary_key.name
 
-        _meta.model_name = cls.__name__
+        _meta.model_name = new_class.__name__
 
         if hasattr(cls, '__unicode__'):
             setattr(cls, '__repr__', lambda self: '<%s: %s>' % (
