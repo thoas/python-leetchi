@@ -43,6 +43,7 @@ class UsersTest(unittest.TestCase):
             'ip_address': '127.0.0.1',
             'tag': 'custom_information',
             'nationality': 'FR',
+            'birthday': date(1970, 1, 1)
         }
         user = User(**params)
         user.save(handler)
