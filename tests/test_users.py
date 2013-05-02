@@ -13,7 +13,8 @@ class UsersTest(unittest.TestCase):
             'email': 'mark@leetchi.com',
             'ip_address': '127.0.0.1',
             'tag': 'custom_information',
-            'birthday': date.today()
+            'birthday': date.today(),
+            'nationality': 'FR',
         }
         user = User(**params)
 
@@ -40,7 +41,8 @@ class UsersTest(unittest.TestCase):
             'last_name': 'Zuckerberg',
             'email': 'mark@leetchi.com',
             'ip_address': '127.0.0.1',
-            'tag': 'custom_information'
+            'tag': 'custom_information',
+            'nationality': 'FR',
         }
         user = User(**params)
         user.save(handler)

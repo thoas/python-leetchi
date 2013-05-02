@@ -29,7 +29,7 @@ class User(BaseModel):
     has_register_mean_of_payment = BooleanField(api_name='HasRegisterMeanOfPayment')
     ip_address = CharField(api_name='IP', required=True)
     birthday = DateField(api_name='Birthday')
-    nationality = DateField(api_name='Nationality', required=True)
+    nationality = CharField(api_name='Nationality', required=True)
     type = CharField(api_name='PersonType', required=True,
                      choices=TYPE_CHOICES, default=TYPE_CHOICES.natural)
     personal_wallet_amount = AmountField(api_name='PersonalWalletAmount')
