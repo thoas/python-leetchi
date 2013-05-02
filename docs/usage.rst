@@ -16,6 +16,7 @@ To create a new handler, you have to provide several parameters.
 ..................
 
 This is the partner identifier used by mangopay_ to identify you.
+
 ``API_PRIVATE_KEY``
 ...................
 
