@@ -1,3 +1,8 @@
+0.2.9 - 2013-05-04
+==================
+
+- Catch ConnectionError when connection is reset by peer
+
 0.2.8 - 2013-04-30
 ==================
 
