@@ -4,6 +4,8 @@ import base64
 import time
 import logging
 
+from requests.exceptions import ConnectionError
+
 try:
     import simplejson as json
 except ImportError:
@@ -126,7 +128,7 @@ class LeetchiAPI(object):
             if result.content:
                 try:
                     return result, json.loads(result.content)
-                except ValueError:
+                except (ValueError, ConnectionError):
                     self._create_decodeerror(result)
             else:
                 self._create_decodeerror(result)
