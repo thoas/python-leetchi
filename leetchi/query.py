@@ -1,4 +1,4 @@
-from .exceptions import DecodeError
+from .exceptions import APIError
 
 
 class BaseQuery(object):
@@ -27,8 +27,8 @@ class SelectQuery(BaseQuery):
         try:
             result, data = handler.request(self.method,
                                            '/%s/%d' % (self.model._meta.verbose_name_plural, reference))
-        except DecodeError, e:
-            if e.status_code == 404:
+        except APIError as e:
+            if e.code == 404:
                 raise self.model.DoesNotExist('instance %s matching reference %d does not exist' % (self.model._meta.model_name, reference))
         else:
             return self.model(**dict(self.parse_result(data), **{'handler': handler}))

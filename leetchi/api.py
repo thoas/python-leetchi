@@ -104,9 +104,12 @@ class LeetchiAPI(object):
 
         request_started.send(url=url, data=data, headers=headers, method=method)
 
-        result = requests.request(method, url,
-                                  headers=headers,
-                                  data=data)
+        try:
+            result = requests.request(method, url,
+                                    headers=headers,
+                                    data=data)
+        except ConnectionError as e:
+            raise APIError(e.message)
 
         request_finished.send(url=url, data=data, headers=headers, method=method, result=result)
 
@@ -128,7 +131,7 @@ class LeetchiAPI(object):
             if result.content:
                 try:
                     return result, json.loads(result.content)
-                except (ValueError, ConnectionError):
+                except ValueError:
                     self._create_decodeerror(result)
             else:
                 self._create_decodeerror(result)
@@ -139,7 +142,7 @@ class LeetchiAPI(object):
         logger.error(u'API ERROR: status_code: %s | headers: %s | content: %s' % (result.status_code,
                                                                                   result.headers,
                                                                                   text))
-        raise APIError(result.status_code, text)
+        raise APIError(text, code=result.status_code)
 
     def _create_decodeerror(self, result):
 
@@ -148,4 +151,7 @@ class LeetchiAPI(object):
         logger.error(u'DECODE ERROR: status_code: %s | headers: %s | content: %s' % (result.status_code,
                                                                                      result.headers,
                                                                                      text))
-        raise DecodeError(result.status_code, result.headers, text)
+
+        raise DecodeError(text,
+                          code=result.status_code,
+                          headers=result.headers)
