@@ -6,6 +6,26 @@ from .resources import handler, User
 
 
 class UsersTest(unittest.TestCase):
+    def test_create_user_with_birthday_lt_1900(self):
+        params = {
+            'first_name': 'Mark',
+            'last_name': 'Zuckerberg',
+            'email': 'mark@leetchi.com',
+            'ip_address': '127.0.0.1',
+            'tag': 'custom_information',
+            'birthday': date(1850, 1, 1),
+            'nationality': 'FR',
+        }
+        user = User(**params)
+
+        self.assertEqual(user.get_pk() is None, True)
+        user.save(handler)
+
+        for key, value in params.items():
+            self.assertEqual(getattr(user, key), value)
+
+        self.assertEqual(user.get_pk() is None, False)
+
     def test_create_user(self):
         params = {
             'first_name': 'Mark',

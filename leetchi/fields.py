@@ -2,6 +2,8 @@ import re
 import time
 import datetime
 
+from .utils import timestamp_from_datetime, timestamp_from_date
+
 
 class FieldDescriptor(object):
     def __init__(self, field):
@@ -91,7 +93,7 @@ class DateTimeField(Field):
         value = super(DateTimeField, self).api_value(value)
 
         if isinstance(value, datetime.datetime):
-            value = int(time.mktime(value.timetuple()))
+            value = timestamp_from_datetime(value)
 
         return value
 
@@ -113,7 +115,7 @@ class DateField(Field):
         value = super(DateField, self).api_value(value)
 
         if isinstance(value, datetime.date):
-            value = int(time.mktime(value.timetuple()))
+            value = timestamp_from_date(value)
 
         return value
 

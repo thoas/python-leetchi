@@ -7,6 +7,8 @@ import M2Crypto.m2urllib  # noqa
 urllib.URLopener.open_https = orig   # uncomment this line back and forth
 from M2Crypto import EVP
 
+import datetime
+
 
 def openssl_pkey_get_private(filename, password):
     private_key = EVP.load_key(filename, lambda x: password)
@@ -97,3 +99,15 @@ class Choices(object):
     def __repr__(self):
         return '%s(%s)' % (self.__class__.__name__,
                            ', '.join(("%s" % repr(i) for i in self._full)))
+
+
+def timestamp_from_datetime(dt):
+    epoch = datetime.datetime(1970, 1, 1)
+    diff = dt - epoch
+    return diff.days * 24 * 3600 + diff.seconds
+
+
+def timestamp_from_date(date):
+    epoch = datetime.date(1970, 1, 1)
+    diff = date - epoch
+    return diff.days * 24 * 3600 + diff.seconds
