@@ -2,7 +2,7 @@ import unittest
 
 from datetime import date
 
-from .resources import handler, User
+from .resources import handler, User, StrongAuthentification
 
 
 class UsersTest(unittest.TestCase):
@@ -54,6 +54,23 @@ class UsersTest(unittest.TestCase):
         self.assertEqual(previous_pk, user.get_pk())
 
         self.assertEqual(user.first_name, 'Mike')
+
+    def test_strong_authentification(self):
+        user = User(**{
+            'first_name': 'Mark',
+            'last_name': 'Zuckerberg',
+            'email': 'mark@leetchi.com',
+            'ip_address': '127.0.0.1',
+            'tag': 'custom_information',
+            'birthday': date.today(),
+            'nationality': 'FR',
+        })
+
+        user.save(handler)
+
+        auth = StrongAuthentification(user=user, beneficiary_id=0)
+
+        auth.save(handler)
 
     def test_retrieve_user(self):
         params = {

@@ -6,6 +6,7 @@ from .fields import (PrimaryKeyField, EmailField, CharField,
                      ForeignKeyField, AmountField)
 
 from .utils import Choices
+from .query import InsertQuery
 
 
 class BaseModel(BaseApiModel):
@@ -42,6 +43,27 @@ class User(BaseModel):
         return u'%s %s' % (self.first_name, self.last_name)
 
 
+class StrongAuthentification(BaseModel):
+    user = ForeignKeyField(User, api_name='UserID',
+                           required=True,
+                           related_name='user_strong_authentifications')
+    beneficiary = ForeignKeyField(User, api_name='BeneficiaryID',
+                                  related_name='beneficiary_strong_authentifications')
+    is_transmitted = BooleanField(api_name='IsDocumentsTransmitted')
+    is_succeeded = BooleanField(api_name='IsSucceeded')
+    is_completed = BooleanField(api_name='IsCompleted')
+    message = CharField(api_name='Message')
+    url_request = CharField(api_name='UrlRequest')
+
+    class Meta:
+        verbose_name = 'strongAuthentification'
+        verbose_name_plural = 'strongAuthentifications'
+
+        urls = {
+            InsertQuery.identifier: lambda params: '/users/%s/strongAuthentication' % params['user_id']
+        }
+
+
 class Wallet(BaseModel):
     name = CharField(api_name='Name', required=True)
 
@@ -56,7 +78,7 @@ class Wallet(BaseModel):
     contribution_limit_date = DateTimeField(api_name='ContributionLimitDate')
     is_closed = BooleanField(api_name='IsClosed')
 
-    users = ManyToManyField(User, api_name='Owners')
+    users = ManyToManyField(User, api_name='Owners', related_name='wallets')
 
     class Meta:
         verbose_name = 'wallet'
@@ -69,7 +91,8 @@ class Wallet(BaseModel):
 class PaymentCard(BaseApiModel):
     id = PrimaryKeyField(api_name='ID')
     tag = CharField(api_name='Tag', required=True)
-    owner = ForeignKeyField(User, api_name='UserID', required=True)
+    owner = ForeignKeyField(User, api_name='UserID', required=True,
+                            related_name='payment_cards')
     card_number = CharField(api_name='CardNumber', required=True)
     redirect_url = CharField(api_name='RedirectURL')
     return_url = CharField(api_name='ReturnURL', required=True)
@@ -86,8 +109,14 @@ class Transfer(BaseModel):
 
     amount = AmountField(api_name='Amount', required=True)
 
-    payer_wallet = ForeignKeyField(Wallet, api_name='PayerWalletID', required=True)
-    beneficiary_wallet = ForeignKeyField(Wallet, api_name='BeneficiaryWalletID', required=True)
+    payer_wallet = ForeignKeyField(Wallet,
+                                   api_name='PayerWalletID',
+                                   related_name='payer_transfers',
+                                   required=True)
+    beneficiary_wallet = ForeignKeyField(Wallet,
+                                         api_name='BeneficiaryWalletID',
+                                         required=True,
+                                         related_name='beneficiary_transfers_set')
 
     class Meta:
         verbose_name = 'transfer'
@@ -95,8 +124,14 @@ class Transfer(BaseModel):
 
 
 class TransferRefund(BaseModel):
-    transfer = ForeignKeyField(Transfer, api_name='TransferID', required=True)
-    user = ForeignKeyField(User, api_name='UserID', required=True)
+    transfer = ForeignKeyField(Transfer,
+                               api_name='TransferID',
+                               required=True,
+                               related_name='transfer_refunds')
+    user = ForeignKeyField(User,
+                           api_name='UserID',
+                           required=True,
+                           related_name='transfer_refunds')
 
     class Meta:
         verbose_name = 'transfer-refund'
@@ -104,8 +139,10 @@ class TransferRefund(BaseModel):
 
 
 class WithdrawalContribution(BaseModel):
-    user = ForeignKeyField(User, api_name='UserID', required=True)
-    wallet = ForeignKeyField(Wallet, api_name='WalletID')
+    user = ForeignKeyField(User, api_name='UserID', required=True,
+                           related_name='withdrawal_contributions')
+    wallet = ForeignKeyField(Wallet, api_name='WalletID',
+                             related_name='withdrawal_contributions')
     status = CharField(api_name='Status')
     amount = AmountField(api_name='Amount')
     amount_declared = AmountField(api_name='AmountDeclared', required=True)
@@ -121,8 +158,10 @@ class WithdrawalContribution(BaseModel):
 
 
 class Contribution(BaseModel):
-    wallet = ForeignKeyField(Wallet, api_name='WalletID', required=True)
-    user = ForeignKeyField(User, api_name='UserID', required=True)
+    wallet = ForeignKeyField(Wallet, api_name='WalletID', required=True,
+                             related_name='contributions')
+    user = ForeignKeyField(User, api_name='UserID', required=True,
+                           related_name='contributions')
     amount = AmountField(api_name='Amount', required=True)
     client_fee_amount = AmountField(api_name='ClientFeeAmount')
     leetchi_fee_amount = AmountField(api_name='LeetchiFeeAmount')
@@ -146,8 +185,10 @@ class Contribution(BaseModel):
 
 
 class Withdrawal(BaseModel):
-    wallet = ForeignKeyField(Wallet, api_name='WalletID', required=True)
-    user = ForeignKeyField(User, api_name='UserID', required=True)
+    wallet = ForeignKeyField(Wallet, api_name='WalletID', required=True,
+                             related_name='withdrawals')
+    user = ForeignKeyField(User, api_name='UserID', required=True,
+                           related_name='withdrawals')
     amount = AmountField(api_name='Amount', required=True)
     amount_without_fees = AmountField(api_name='AmountWithoutFees')
     client_fee_amount = AmountField(api_name='ClientFeeAmount')
@@ -168,8 +209,12 @@ class Withdrawal(BaseModel):
 
 
 class Refund(BaseModel):
-    user = ForeignKeyField(User, api_name='UserID', required=True)
-    contribution = ForeignKeyField(Contribution, api_name='ContributionID', required=True)
+    user = ForeignKeyField(User, api_name='UserID', required=True,
+                           related_name='refunds')
+    contribution = ForeignKeyField(Contribution,
+                                   api_name='ContributionID',
+                                   required=True,
+                                   related_name='refunds')
 
     is_succeeded = BooleanField(api_name='IsSucceeded')
     is_completed = BooleanField(api_name='IsCompleted')
@@ -185,8 +230,10 @@ class Refund(BaseModel):
 
 
 class Operation(BaseModel):
-    user = ForeignKeyField(User, api_name='UserID', required=True)
-    wallet = ForeignKeyField(Wallet, api_name='WalletID', required=True)
+    user = ForeignKeyField(User, api_name='UserID', required=True,
+                           related_name='operations')
+    wallet = ForeignKeyField(Wallet, api_name='WalletID', required=True,
+                             related_name='operations')
     amount = AmountField(api_name='Amount', required=True)
 
     transaction_type = CharField(api_name='TransactionType')

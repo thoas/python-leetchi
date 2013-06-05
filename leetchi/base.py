@@ -86,6 +86,9 @@ class ApiObjectBase(type):
         if meta:
             meta_options.update((k, v) for k, v in meta.__dict__.items() if not k.startswith('_'))
 
+        if not 'urls' in meta_options:
+            meta_options['urls'] = {}
+
         orig_primary_key = None
 
         for b in bases:
@@ -97,11 +100,11 @@ class ApiObjectBase(type):
                 if k in cls.inheritable_options and k not in meta_options:
                     meta_options[k] = v
 
-            for (name, attr) in b.__dict__.items():
+            for (k, attr) in b.__dict__.items():
                 if not isinstance(attr, FieldDescriptor) or attr in attrs:
                     continue
 
-                attrs[name] = deepcopy(attr.field)
+                attrs[k] = deepcopy(attr.field)
 
                 if isinstance(attr.field, PrimaryKeyField) and not orig_primary_key:
                     orig_primary_key = deepcopy(attr.field)

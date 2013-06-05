@@ -68,4 +68,4 @@ class WalletsTest(unittest.TestCase):
 
         user = User.get(user.get_pk(), handler=handler)
 
-        self.assertEqual(user.wallet_set, [wallet])
+        self.assertEqual(user.wallets, [wallet])

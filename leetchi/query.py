@@ -20,6 +20,8 @@ class BaseQuery(object):
 
 
 class SelectQuery(BaseQuery):
+    identifier = 'SELECT'
+
     def __init__(self, model, *args, **kwargs):
         super(SelectQuery, self).__init__(model, 'GET')
 
@@ -42,6 +44,8 @@ class SelectQuery(BaseQuery):
 
 
 class InsertQuery(BaseQuery):
+    identifier = 'INSERT'
+
     def __init__(self, model, **kwargs):
         self.insert_query = kwargs
         super(InsertQuery, self).__init__(model, 'POST')
@@ -59,14 +63,22 @@ class InsertQuery(BaseQuery):
     def execute(self, handler):
         data = self.parse_insert()
 
+        url = self.model._meta.urls.get(self.identifier,
+                                        '/%s/' % self.model._meta.verbose_name_plural)
+
+        if callable(url):
+            url = url(self.insert_query)
+
         result, data = handler.request(self.method,
-                                       '/%s/' % self.model._meta.verbose_name_plural,
+                                       url,
                                        data=data)
 
         return dict(self.parse_result(data), **{'handler': handler})
 
 
 class UpdateQuery(BaseQuery):
+    identifier = 'UPDATE'
+
     def __init__(self, model, reference, **kwargs):
         self.update_query = kwargs
         self.reference = reference
@@ -85,8 +97,15 @@ class UpdateQuery(BaseQuery):
     def execute(self, handler):
         data = self.parse_update()
 
+        url = self.model._meta.urls.get(self.identifier,
+                                        '/%s/%d/' % (self.model._meta.verbose_name_plural,
+                                                     self.reference))
+
+        if callable(url):
+            url = url(self.update_query, self.reference)
+
         result, data = handler.request(self.method,
-                                       '/%s/%d/' % (self.model._meta.verbose_name_plural, self.reference),
+                                       url,
                                        data=data)
 
         return self.parse_result(data)
