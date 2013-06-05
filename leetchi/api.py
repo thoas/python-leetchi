@@ -15,7 +15,7 @@ from .exceptions import APIError, DecodeError
 
 from .utils import openssl_pkey_get_private, openssl_sign
 
-from .signals import request_finished, request_started
+from .signals import request_finished, request_started, request_error
 
 logger = logging.getLogger('leetchi')
 
@@ -106,18 +106,23 @@ class LeetchiAPI(object):
 
         try:
             result = requests.request(method, url,
-                                    headers=headers,
-                                    data=data)
+                                      headers=headers,
+                                      data=data)
         except ConnectionError as e:
             raise APIError(e.message)
 
-        request_finished.send(url=url, data=data, headers=headers, method=method, result=result)
+        laps = time.time() - ts
 
-        te = time.time()
+        request_finished.send(url=url,
+                              data=data,
+                              headers=headers,
+                              method=method,
+                              result=result,
+                              laps=laps)
 
         logger.info(u'DATA[OUT -> %s][%2.3f seconds]\n\t- status_code: %s\n\t- headers: %s\n\t- content: %s' % (
             url,
-            te - ts,
+            laps,
             result.status_code,
             result.headers,
             result.text if hasattr(result, 'text') else result.content)
@@ -126,32 +131,45 @@ class LeetchiAPI(object):
         if result.status_code in (requests.codes.BAD_REQUEST, requests.codes.forbidden,
                                   requests.codes.not_allowed, requests.codes.length_required,
                                   requests.codes.server_error):
-            self._create_apierror(result)
+            self._create_apierror(result, url=url)
         else:
             if result.content:
                 try:
                     return result, json.loads(result.content)
                 except ValueError:
-                    self._create_decodeerror(result)
+                    self._create_decodeerror(result, url=url)
             else:
-                self._create_decodeerror(result)
+                self._create_decodeerror(result, url=url)
 
-    def _create_apierror(self, result):
+    def _create_apierror(self, result, url=None):
         text = result.text if hasattr(result, 'text') else result.content
 
-        logger.error(u'API ERROR: status_code: %s | headers: %s | content: %s' % (result.status_code,
-                                                                                  result.headers,
+        status_code = result.status_code
+
+        headers = result.headers
+
+        logger.error(u'API ERROR: status_code: %s | headers: %s | content: %s' % (status_code,
+                                                                                  headers,
                                                                                   text))
-        raise APIError(text, code=result.status_code)
 
-    def _create_decodeerror(self, result):
+        request_error.send(url=url, status_code=status_code, headers=headers)
+
+        raise APIError(text, code=status_code)
+
+    def _create_decodeerror(self, result, url=None):
 
         text = result.text if hasattr(result, 'text') else result.content
 
-        logger.error(u'DECODE ERROR: status_code: %s | headers: %s | content: %s' % (result.status_code,
-                                                                                     result.headers,
+        status_code = result.status_code
+
+        headers = result.headers
+
+        logger.error(u'DECODE ERROR: status_code: %s | headers: %s | content: %s' % (status_code,
+                                                                                     headers,
                                                                                      text))
 
+        request_error.send(url=url, status_code=status_code, headers=headers)
+
         raise DecodeError(text,
-                          code=result.status_code,
-                          headers=result.headers)
+                          code=status_code,
+                          headers=headers)
