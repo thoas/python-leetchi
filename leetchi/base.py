@@ -210,6 +210,11 @@ class BaseApiModel(object):
     def get(cls, *args, **kwargs):
         return cls.select().get(*args, **kwargs)
 
+    def one(self, resource_model):
+        return resource_model.select().get(self.get_pk(),
+                                           resource_model=self.__class__,
+                                           handler=self.handler)
+
     def list(self, resource_model):
         return resource_model.select().list(self.get_pk(),
                                             self.__class__,

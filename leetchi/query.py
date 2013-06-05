@@ -25,10 +25,17 @@ class SelectQuery(BaseQuery):
     def __init__(self, model, *args, **kwargs):
         super(SelectQuery, self).__init__(model, 'GET')
 
-    def get(self, reference, handler):
+    def get(self, reference, handler, resource_model=None):
         try:
-            result, data = handler.request(self.method,
-                                           '/%s/%d' % (self.model._meta.verbose_name_plural, reference))
+            if resource_model is None:
+                url = '/%s/%d' % (self.model._meta.verbose_name_plural,
+                                  reference)
+            else:
+                url = '/%s/%d/%s' % (resource_model._meta.verbose_name_plural,
+                                     reference,
+                                     self.model._meta.verbose_name_plural)
+
+            result, data = handler.request(self.method, url)
         except APIError as e:
             if e.code == 404:
                 raise self.model.DoesNotExist('instance %s matching reference %d does not exist' % (self.model._meta.model_name, reference))

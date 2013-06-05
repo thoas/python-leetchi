@@ -3,7 +3,7 @@ from .base import BaseApiModel
 from .fields import (PrimaryKeyField, EmailField, CharField,
                      BooleanField, DateTimeField, DateField,
                      IntegerField, ManyToManyField,
-                     ForeignKeyField, AmountField)
+                     ForeignKeyField, AmountField, OneToOneField)
 
 from .utils import Choices
 from .query import InsertQuery
@@ -43,12 +43,11 @@ class User(BaseModel):
         return u'%s %s' % (self.first_name, self.last_name)
 
 
-class StrongAuthentification(BaseModel):
-    user = ForeignKeyField(User, api_name='UserID',
-                           required=True,
-                           related_name='user_strong_authentifications')
-    beneficiary = ForeignKeyField(User, api_name='BeneficiaryID',
-                                  related_name='beneficiary_strong_authentifications')
+class StrongAuthentication(BaseModel):
+    user = OneToOneField(User, api_name='UserID',
+                         required=True,
+                         related_name='strong_authentication')
+    beneficiary = ForeignKeyField(User, api_name='BeneficiaryID')
     is_transmitted = BooleanField(api_name='IsDocumentsTransmitted')
     is_succeeded = BooleanField(api_name='IsSucceeded')
     is_completed = BooleanField(api_name='IsCompleted')
@@ -56,8 +55,8 @@ class StrongAuthentification(BaseModel):
     url_request = CharField(api_name='UrlRequest')
 
     class Meta:
-        verbose_name = 'strongAuthentification'
-        verbose_name_plural = 'strongAuthentifications'
+        verbose_name = 'strongAuthentication'
+        verbose_name_plural = 'strongAuthentication'
 
         urls = {
             InsertQuery.identifier: lambda params: '/users/%s/strongAuthentication' % params['user_id']

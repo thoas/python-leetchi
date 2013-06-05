@@ -184,6 +184,15 @@ class AmountDescriptor(object):
         setattr(instance, self.field_name, value * 100.0)
 
 
+class ReverseOneToOneRelatedObject(object):
+    def __init__(self, related_model, name):
+        self.field_name = name
+        self.related_model = related_model
+
+    def __get__(self, instance, instance_type=None):
+        return instance.one(self.related_model)
+
+
 class ForeignKeyField(IntegerField):
     def __init__(self, to, related_name=None, *args, **kwargs):
         self.to = to
@@ -217,6 +226,26 @@ class ForeignKeyField(IntegerField):
             value = value.get_pk()
 
         return value
+
+
+class OneToOneField(ForeignKeyField):
+    def add_to_class(self, klass, name):
+        self.descriptor = name
+        self.name = name + '_id'
+        self.model = klass
+
+        self.api_name = self.api_name or re.sub('_', ' ', name).title()
+
+        if self.related_name is None:
+            self.related_name = klass._meta.verbose_name
+
+        klass._meta.rel_fields[name] = self.name
+        setattr(klass, self.descriptor, ForeignRelatedObject(self.to, self.name))
+        setattr(klass, self.name, None)
+
+        reverse_rel = ReverseOneToOneRelatedObject(klass, self.name)
+        setattr(self.to, self.related_name, reverse_rel)
+        self.to._meta.reverse_relations[self.related_name] = klass
 
 
 class ForeignRelatedObject(object):
