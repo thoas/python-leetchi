@@ -1,3 +1,13 @@
+0.2.12 - 2013-06-05
+===================
+
+- Fix inherited models representations
+- Add related_name for all foreign keys
+- Provide a way to override urls when processing api requests.
+- Add OneToOneField for StrongAuthentication
+- Add request_error signal
+- Laps timing is now sent in request_finished signal
+
 0.2.11 - 2013-05-29
 ===================
 
