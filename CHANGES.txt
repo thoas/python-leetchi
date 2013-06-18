@@ -1,3 +1,8 @@
+0.2.13 - 2013-06-18
+===================
+
+- ``handler`` is now not required in save method if the instance has been retrieved
+
 0.2.12 - 2013-06-05
 ===================
 
