@@ -147,6 +147,7 @@ class BaseApiModel(object):
 
     def __init__(self, *args, **kwargs):
         self._data = self._meta.get_default_dict()
+        self.handler = None
 
         for k, v in kwargs.items():
             setattr(self, k, v)
@@ -156,7 +157,10 @@ class BaseApiModel(object):
                 self.get_pk() and
                 other.get_pk() == self.get_pk())
 
-    def save(self, handler, cls=None):
+    def save(self, handler=None, cls=None):
+        if handler is None:
+            handler = self.handler
+
         field_dict = dict(self._data)
         field_dict.update(self.get_field_dict())
         field_dict.pop(self._meta.pk_name)
