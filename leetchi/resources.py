@@ -43,11 +43,24 @@ class User(BaseModel):
         return u'%s %s' % (self.first_name, self.last_name)
 
 
+class Beneficiary(BaseModel):
+    user = ForeignKeyField(User, api_name='UserID', required=True,
+                           related_name='beneficiaries')
+    bank_account_owner_name = CharField(api_name='BankAccountOwnerName', required=True)
+    bank_account_owner_address = CharField(api_name='BankAccountOwnerAddress', required=True)
+    bank_account_iban = CharField(api_name='BankAccountIBAN', required=True)
+    bank_account_bic = CharField(api_name='BankAccountBIC', required=True)
+
+    class Meta:
+        verbose_name = 'beneficiary'
+        verbose_name_plural = 'beneficiaries'
+
+
 class StrongAuthentication(BaseModel):
     user = OneToOneField(User, api_name='UserID',
                          required=True,
                          related_name='strong_authentication')
-    beneficiary = ForeignKeyField(User, api_name='BeneficiaryID')
+    beneficiary = ForeignKeyField(Beneficiary, api_name='BeneficiaryID')
     is_transmitted = BooleanField(api_name='IsDocumentsTransmitted')
     is_succeeded = BooleanField(api_name='IsSucceeded')
     is_completed = BooleanField(api_name='IsCompleted')
