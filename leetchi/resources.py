@@ -6,7 +6,7 @@ from .fields import (PrimaryKeyField, EmailField, CharField,
                      ForeignKeyField, AmountField, OneToOneField)
 
 from .utils import Choices
-from .query import InsertQuery
+from .query import InsertQuery, UpdateQuery
 
 
 class BaseModel(BaseApiModel):
@@ -72,7 +72,8 @@ class StrongAuthentication(BaseModel):
         verbose_name_plural = 'strongAuthentication'
 
         urls = {
-            InsertQuery.identifier: lambda params: '/users/%s/strongAuthentication' % params['user_id']
+            InsertQuery.identifier: lambda params: '/users/%s/strongAuthentication' % params['user_id'],
+            UpdateQuery.identifier: lambda params, reference: '/users/%s/strongAuthentication' % params['user_id']
         }
 
 

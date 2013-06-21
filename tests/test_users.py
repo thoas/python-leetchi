@@ -86,6 +86,9 @@ class UsersTest(unittest.TestCase):
 
         self.assertEqual(strong_authentication.user, user)
 
+        strong_authentication.is_transmitted = True
+        strong_authentication.save()
+
         user = User(**{
             'first_name': 'Mark',
             'last_name': 'Zuckerberg',
@@ -95,7 +98,6 @@ class UsersTest(unittest.TestCase):
             'birthday': date.today(),
             'nationality': 'FR',
         })
-
         user.save(handler)
 
         self.assertRaises(StrongAuthentication.DoesNotExist, user.strong_authentication)
