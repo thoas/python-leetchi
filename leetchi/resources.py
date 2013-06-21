@@ -208,10 +208,12 @@ class Withdrawal(BaseModel):
     is_succeeded = BooleanField(api_name='IsSucceeded')
     is_completed = BooleanField(api_name='IsCompleted')
 
-    bank_account_owner_name = CharField(api_name='BankAccountOwnerName', required=True)
-    bank_account_owner_address = CharField(api_name='BankAccountOwnerAddress', required=True)
-    bank_account_iban = CharField(api_name='BankAccountIBAN', required=True)
-    bank_account_bic = CharField(api_name='BankAccountBIC', required=True)
+    bank_account_owner_name = CharField(api_name='BankAccountOwnerName')
+    bank_account_owner_address = CharField(api_name='BankAccountOwnerAddress')
+    bank_account_iban = CharField(api_name='BankAccountIBAN')
+    bank_account_bic = CharField(api_name='BankAccountBIC')
+
+    beneficiary = ForeignKeyField(Beneficiary, required=True, api_name='BeneficiaryID')
 
     error = CharField(api_name='Error')
 
