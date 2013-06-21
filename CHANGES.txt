@@ -1,3 +1,8 @@
+0.2.15 - 2013-06-21
+===================
+
+- Add beneficiary attribute to Withdrawal resource
+
 0.2.14 - 2013-06-20
 ===================
 
