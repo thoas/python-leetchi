@@ -197,6 +197,59 @@ class Contribution(BaseModel):
         return self.is_succeeded and self.is_completed
 
 
+class ImmediateContribution(BaseModel):
+    user = ForeignKeyField(User, api_name='UserID', required=True,
+                           related_name='immediate_contributions')
+    wallet = ForeignKeyField(Wallet, api_name='WalletID', required=True,
+                           related_name='immediate_contributions')
+    amount = AmountField(api_name='Amount', required=True)
+    client_fee_amount = AmountField(api_name='ClientFeeAmount')
+    leetchi_fee_amount = AmountField(api_name='LeetchiFeeAmount')
+    is_succeeded = BooleanField(api_name='IsSucceeded')
+    is_completed = BooleanField(api_name='IsCompleted')
+    error = CharField(api_name='Error')
+    payment_card = ForeignKeyField(PaymentCard, api_name='PaymentCardID')
+    type = CharField(api_name='Type')
+    answer_code = CharField(api_name='AnswerCode')
+    answer_message = CharField(api_name='AnswerMessage')
+    culture = CharField(api_name='Culture')
+
+    class Meta:
+        verbose_name = 'immediate-contribution'
+        verbose_name_plural = 'immediate-contributions'
+
+    def is_success(self):
+        return self.is_succeeded and self.is_completed
+
+
+class RecurrentContribution(BaseModel):
+    user = ForeignKeyField(User, api_name='UserID', required=True,
+                           related_name='recurrent_contributions')
+    wallet = ForeignKeyField(Wallet, api_name='WalletID', required=True,
+                           related_name='recurrent_contributions')
+    amount = AmountField(api_name='Amount', required=True)
+    client_fee_amount = AmountField(api_name='ClientFeeAmount')
+    leetchi_fee_amount = AmountField(api_name='LeetchiFeeAmount')
+    is_succeeded = BooleanField(api_name='IsSucceeded')
+    is_completed = BooleanField(api_name='IsCompleted')
+    is_enabled = BooleanField(api_name='IsEnabled')
+    payment_url = CharField(api_name='PaymentURL')
+    template_url = CharField(api_name='TemplateURL')
+    return_url = CharField(api_name='ReturnURL', required=True)
+    error = CharField(api_name='Error')
+    culture = CharField(api_name='Culture')
+    start_date = DateTimeField(api_name='StartDate', required=True)
+    frequency_code = CharField(api_name='FrequencyCode', required=True)
+    number_of_executions = IntegerField(api_name='NumberOfExecutions', required=True)
+
+    class Meta:
+        verbose_name = 'recurrent-contribution'
+        verbose_name_plural = 'recurrent-contributions'
+
+    def is_success(self):
+        return self.is_succeeded and self.is_completed
+
+
 class Withdrawal(BaseModel):
     wallet = ForeignKeyField(Wallet, api_name='WalletID', required=True,
                              related_name='withdrawals')
