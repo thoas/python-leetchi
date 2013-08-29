@@ -104,7 +104,7 @@ class Wallet(BaseModel):
 class PaymentCard(BaseApiModel):
     id = PrimaryKeyField(api_name='ID')
     tag = CharField(api_name='Tag', required=True)
-    owner = ForeignKeyField(User, api_name='UserID', required=True,
+    owner = ForeignKeyField(User, api_name='OwnerID', required=True,
                             related_name='payment_cards')
     card_number = CharField(api_name='CardNumber', required=True)
     redirect_url = CharField(api_name='RedirectURL')
