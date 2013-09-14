@@ -188,6 +188,8 @@ class Contribution(BaseModel):
     payment_card = ForeignKeyField(PaymentCard, api_name='PaymentCardID')
     type = CharField(api_name='Type')  # type of transaction: payline, ogone
     culture = CharField(api_name='Culture')
+    answer_code = CharField(api_name='AnswerCode')
+    answer_message = CharField(api_name='AnswerMessage')
 
     class Meta:
         verbose_name = 'contribution'
