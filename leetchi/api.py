@@ -3,6 +3,7 @@ import os
 import base64
 import time
 import logging
+import six
 
 from requests.exceptions import ConnectionError
 
@@ -31,7 +32,7 @@ def check_required(required, **kwargs):
 
 
 class LeetchiAPI(object):
-    sandbox_host = 'http://api.prod.leetchi.com'
+    sandbox_host = 'http://api-preprod.leetchi.com'
     production_host = 'http://api.leetchi.com'
 
     def __init__(self, partner_id, private_key, private_key_password, sandbox=False, host=None):
@@ -63,7 +64,7 @@ class LeetchiAPI(object):
 
         signed_data = openssl_sign(data, private_key)
 
-        signature = base64.encodestring(signed_data)
+        signature = getattr(base64, 'encodestring', 'encodebytes')(signed_data)
 
         return signature
 
@@ -88,8 +89,13 @@ class LeetchiAPI(object):
 
         timestamp = time.time()
 
+        signature = self._auth_signature(method, url, data, timestamp)
+
+        if six.PY3:
+            signature = signature.decode('utf-8')
+
         headers = {
-            'X-Leetchi-Signature': self._auth_signature(method, url, data, timestamp).replace('\n', ''),
+            'X-Leetchi-Signature': signature.replace('\n', ''),
             'Content-Type': 'application/json'
         }
 

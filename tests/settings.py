@@ -1,8 +1,8 @@
 import sys
 
 try:
-    import credentials
-except ImportError, e:
+    from . import credentials
+except ImportError as e:
     sys.stderr.write('Error: Can\'t find the file credentials.py')
     raise e
 

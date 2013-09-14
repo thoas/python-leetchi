@@ -1,6 +1,7 @@
 import re
 import time
 import datetime
+import six
 
 from .utils import timestamp_from_datetime, timestamp_from_date
 
@@ -80,11 +81,11 @@ class DateTimeField(Field):
     def python_value(self, value):
         value = super(DateTimeField, self).python_value(value)
 
-        if isinstance(value, basestring):
+        if isinstance(value, six.string_types):
             value = value.rsplit('.', 1)[0]
             value = datetime(*time.strptime(value, '%Y-%m-%d %H:%M:%S')[:6])
 
-        if isinstance(value, int):
+        if isinstance(value, six.integer_types):
             value = datetime.datetime.utcfromtimestamp(value)
 
         return value
@@ -102,11 +103,11 @@ class DateField(Field):
     def python_value(self, value):
         value = super(DateField, self).python_value(value)
 
-        if isinstance(value, basestring):
+        if isinstance(value, six.string_types):
             value = value.rsplit('.', 1)[0]
             value = datetime.date(*time.strptime(value, '%Y-%m-%d')[:6])
 
-        if isinstance(value, int):
+        if isinstance(value, six.integer_types):
             value = datetime.date.fromtimestamp(value)
 
         return value

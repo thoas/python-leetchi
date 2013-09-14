@@ -6,6 +6,7 @@ from .fields import (PrimaryKeyField, EmailField, CharField,
                      ForeignKeyField, AmountField, OneToOneField)
 
 from .utils import Choices
+from .compat import python_2_unicode_compatible
 from .query import InsertQuery, UpdateQuery
 
 
@@ -16,6 +17,7 @@ class BaseModel(BaseApiModel):
     update_date = DateTimeField(api_name='UpdateDate')
 
 
+@python_2_unicode_compatible
 class User(BaseModel):
     TYPE_CHOICES = Choices(
         ('NATURAL_PERSON', 'natural', 'Natural person'),
@@ -39,8 +41,8 @@ class User(BaseModel):
         verbose_name = 'user'
         verbose_name_plural = 'users'
 
-    def __unicode__(self):
-        return u'%s %s' % (self.first_name, self.last_name)
+    def __str__(self):
+        return '%s %s' % (self.first_name, self.last_name)
 
 
 class Beneficiary(BaseModel):
@@ -77,6 +79,7 @@ class StrongAuthentication(BaseModel):
         }
 
 
+@python_2_unicode_compatible
 class Wallet(BaseModel):
     name = CharField(api_name='Name', required=True)
 
@@ -97,7 +100,7 @@ class Wallet(BaseModel):
         verbose_name = 'wallet'
         verbose_name_plural = 'wallets'
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
@@ -203,7 +206,7 @@ class ImmediateContribution(BaseModel):
     user = ForeignKeyField(User, api_name='UserID', required=True,
                            related_name='immediate_contributions')
     wallet = ForeignKeyField(Wallet, api_name='WalletID', required=True,
-                           related_name='immediate_contributions')
+                             related_name='immediate_contributions')
     amount = AmountField(api_name='Amount', required=True)
     client_fee_amount = AmountField(api_name='ClientFeeAmount')
     leetchi_fee_amount = AmountField(api_name='LeetchiFeeAmount')
@@ -228,7 +231,7 @@ class RecurrentContribution(BaseModel):
     user = ForeignKeyField(User, api_name='UserID', required=True,
                            related_name='recurrent_contributions')
     wallet = ForeignKeyField(Wallet, api_name='WalletID', required=True,
-                           related_name='recurrent_contributions')
+                             related_name='recurrent_contributions')
     amount = AmountField(api_name='Amount', required=True)
     client_fee_amount = AmountField(api_name='ClientFeeAmount')
     leetchi_fee_amount = AmountField(api_name='LeetchiFeeAmount')
@@ -312,3 +315,8 @@ class Operation(BaseModel):
     class Meta:
         verbose_name = 'operation'
         verbose_name_plural = 'operations'
+
+    def __str__(self):
+        return '<Operation n.%s: %s> %d' % (self.transaction_id,
+                                            self.transaction_type,
+                                            self.amount)

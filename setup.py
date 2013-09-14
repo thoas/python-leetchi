@@ -17,7 +17,8 @@ CLASSIFIERS = [
     'Natural Language :: English',
     'Operating System :: OS Independent',
     'Programming Language :: Python',
-    'Topic :: Software Development :: Libraries :: Python Modules'
+    'Topic :: Software Development :: Libraries :: Python Modules',
+    'Programming Language :: Python :: 3',
 ]
 
 KEYWORDS = 'leetchi api rest users wallets contributions'
@@ -36,9 +37,9 @@ setup(
     install_requires=[
         'distribute',
         'requests',
-        'simplejson>=2.0.9',
-        'M2Crypto>=0.21.1',
-        'blinker==1.2'
+        'pycrypto==2.6',
+        'blinker==1.2',
+        'six==1.4.1'
     ],
     classifiers=CLASSIFIERS,
     keywords=KEYWORDS,

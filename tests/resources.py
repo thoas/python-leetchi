@@ -1,6 +1,6 @@
 import random
 
-import settings
+from . import settings
 
 from leetchi.api import LeetchiAPI
 

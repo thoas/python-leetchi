@@ -1,3 +1,6 @@
-requests==0.10.1
-M2Crypto>=0.21.1
+requests==1.2.3
 simplejson>=2.0.9
+pycrypto==2.6
+blinker==1.2
+six==1.4.1
+nose
