@@ -302,6 +302,7 @@ class Refund(BaseModel):
         return self.is_succeeded and self.is_completed
 
 
+@python_2_unicode_compatible
 class Operation(BaseModel):
     user = ForeignKeyField(User, api_name='UserID', required=True,
                            related_name='operations')
