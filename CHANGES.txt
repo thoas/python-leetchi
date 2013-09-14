@@ -1,3 +1,10 @@
+0.3 - ?
+===================
+
+- Add immediate and recurrent contribution, thanks to nidusfr
+- Add answer_code and answer_message in Contribution, thanks to splanquart
+- Port to Python 3.3, thanks to ebewe
+
 0.2.15 - 2013-06-21
 ===================
 
