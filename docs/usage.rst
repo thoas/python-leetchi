@@ -157,7 +157,7 @@ Creating a new contribution for a dedicated wallet ::
 Creating a new contribution for a personal wallet ::
 
     contribution = Contribution(user=user,
-                                wallet=0,
+                                wallet_id=0,
                                 amount=1000,
                                 return_url='http://my-website/back-url',
                                 client_fee_amount=0)

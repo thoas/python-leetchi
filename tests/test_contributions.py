@@ -83,6 +83,24 @@ class ContributionsTest(unittest.TestCase):
         self.assertEqual(contribution.wallet_id, new_wallet.get_pk())
         self.assertEqual(contribution.payment_url is None, False)
 
+        params = {
+            'tag': 'project',
+            'user': user,
+            'wallet_id': 0,
+            'amount': 1000,
+            'return_url': 'http://ulule.com',
+            'client_fee_amount': 0,
+            'register_mean_of_payment': True
+        }
+
+        contribution = Contribution(**params)
+
+        contribution.save(handler)
+
+        self.assertEqual(contribution.user_id, user.get_pk())
+        self.assertEqual(contribution.wallet_id, 0)
+        self.assertEqual(contribution.payment_url is None, False)
+
         if use_selenium:
             self.selenium.open(contribution.payment_url)
 
