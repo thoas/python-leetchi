@@ -47,7 +47,7 @@ Let's get to work, we will create our first handler with the sandbox host ::
                          private_key_password,
                          sandbox=True)
 
-Now we have a new handler which is using the `sanbox host`_.
+Now we have a new handler which is using the `sandbox host`_.
 
 If you are not specifying that you are using the `sandbox host`_
 nor an existing host, it will use the `production host`_.
