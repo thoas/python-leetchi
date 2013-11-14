@@ -160,7 +160,12 @@ class LeetchiAPI(object):
 
         request_error.send(url=url, status_code=status_code, headers=headers)
 
-        raise APIError(text, code=status_code)
+        try:
+            content = result.json()
+        except ValueError:
+            content = None
+
+        raise APIError(text, code=status_code, content=content)
 
     def _create_decodeerror(self, result, url=None):
 
@@ -176,6 +181,12 @@ class LeetchiAPI(object):
 
         request_error.send(url=url, status_code=status_code, headers=headers)
 
+        try:
+            content = result.json()
+        except ValueError:
+            content = None
+
         raise DecodeError(text,
                           code=status_code,
-                          headers=headers)
+                          headers=headers,
+                          content=content)

@@ -1,5 +1,10 @@
-0.3 - ?
-===================
+0.3.1 - 2013-11-14
+==================
+
+- Add json response when accessible in APIError and DecodeError exceptions
+
+0.3 - 2013-09-17
+================
 
 - Add immediate and recurrent contribution, thanks to nidusfr
 - Add answer_code and answer_message in Contribution, thanks to splanquart
