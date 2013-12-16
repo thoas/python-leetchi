@@ -179,7 +179,12 @@ class AmountDescriptor(object):
         self.field_name = name
 
     def __get__(self, instance, instance_type=None):
-        return getattr(instance, self.field_name) / 100.0
+        amount = getattr(instance, self.field_name)
+
+        if amount:
+            return amount / 100.0
+
+        return 0
 
     def __set__(self, instance, value):
         setattr(instance, self.field_name, value * 100.0)
