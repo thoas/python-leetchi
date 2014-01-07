@@ -132,19 +132,6 @@ class ApiObjectBase(type):
 
         _meta.model_name = new_class.__name__
 
-        if six.PY2:
-            if hasattr(cls, '__unicode__'):
-                setattr(cls, '__repr__', lambda self: '<%s: %s>' % (
-                    _meta.model_name,
-                    getattr(self, '__unicode__')()
-                ))
-        else:
-            if hasattr(cls, '__str__'):
-                setattr(cls, '__repr__', lambda self: '<%s: %s>' % (
-                    _meta.model_name,
-                    getattr(self, '__str__')()
-                ))
-
         exception_class = type('%sDoesNotExist' % _meta.model_name, (DoesNotExist,), {})
 
         cls.DoesNotExist = exception_class
@@ -162,6 +149,13 @@ class BaseApiModel(object):
 
         for k, v in kwargs.items():
             setattr(self, k, v)
+
+    def __repr__(self):
+        try:
+            u = six.text_type(self)
+        except (UnicodeEncodeError, UnicodeDecodeError):
+            u = '[Bad Unicode data]'
+        return '<%s: %s>' % (self.__class__.__name__, u)
 
     def __eq__(self, other):
         return (other.__class__ == self.__class__ and
