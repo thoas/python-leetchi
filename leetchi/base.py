@@ -132,11 +132,17 @@ class ApiObjectBase(type):
 
         _meta.model_name = new_class.__name__
 
-        for method in ('__unicode__', '__str__'):
-            if hasattr(cls, method):
+        if six.PY2:
+            if hasattr(cls, '__unicode__'):
                 setattr(cls, '__repr__', lambda self: '<%s: %s>' % (
                     _meta.model_name,
-                    getattr(self, method)()
+                    getattr(self, '__unicode__')()
+                ))
+        else:
+            if hasattr(cls, '__str__'):
+                setattr(cls, '__repr__', lambda self: '<%s: %s>' % (
+                    _meta.model_name,
+                    getattr(self, '__str__')()
                 ))
 
         exception_class = type('%sDoesNotExist' % _meta.model_name, (DoesNotExist,), {})
