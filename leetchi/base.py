@@ -157,6 +157,12 @@ class BaseApiModel(object):
             u = '[Bad Unicode data]'
         return '<%s: %s>' % (self.__class__.__name__, u)
 
+    def __str__(self):
+        if six.PY2 and hasattr(self, '__unicode__'):
+            return self.encode('utf-8')
+
+        return '%s object' % self.__class__.__name__
+
     def __eq__(self, other):
         return (other.__class__ == self.__class__ and
                 self.get_pk() and
