@@ -8,10 +8,10 @@ api (formely `leetchi <http://www.leetchi.com/>`_).
 Installation
 ------------
 
-python-leetchi requires requests_, M2Crypto_ and blinker_ to work.
+python-leetchi requires requests_, pycrypto_ and blinker_ to work.
 
 .. _requests: http://docs.python-requests.org/en/latest/
-.. _M2Crypto: https://pypi.python.org/pypi/M2Crypto
+.. _pycrypto: https://pypi.python.org/pypi/pycrypto
 .. _blinker: https://pypi.python.org/pypi/blinker
 
 To install it, simply ::

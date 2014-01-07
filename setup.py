@@ -36,10 +36,10 @@ setup(
     zip_safe=False,
     install_requires=[
         'distribute',
-        'requests',
-        'pycrypto==2.6',
+        'requests==2.1.0',
+        'pycrypto==2.6.1',
         'blinker==1.2',
-        'six==1.4.1'
+        'six==1.5.2'
     ],
     classifiers=CLASSIFIERS,
     keywords=KEYWORDS,
