@@ -7,7 +7,7 @@ from .fields import (PrimaryKeyField, EmailField, CharField,
 
 from .utils import Choices
 from .compat import python_2_unicode_compatible
-from .query import InsertQuery, UpdateQuery, SelectQuery
+from .query import InsertQuery, UpdateQuery
 
 
 class BaseModel(BaseApiModel):
@@ -202,23 +202,19 @@ class Contribution(BaseModel):
         return self.is_succeeded and self.is_completed
 
 
-class ContributionPaymentCard(BaseApiModel):
+class DetailPaymentCard(BaseApiModel):
     id = PrimaryKeyField(api_name='ID')
     contribution = OneToOneField(Contribution, api_name='ContributionID',
                                  required=True,
-                                 related_name='payment_card')
+                                 related_name='detail_payment_card')
     number = CharField(api_name='CardNumber')
     type = CharField(api_name='CardType')
     expiration_date = CharField(api_name='CardExpirationDate')
     extended_card_country = CharField(api_name='ExtendedCardCountry')
 
     class Meta:
-        verbose_name = 'contributionPaymentCard'
-        verbose_name_plural = 'contributionPaymentCard'
-
-        urls = {
-            SelectQuery.identifier: lambda params: '/contributions/%s/details' % params['contribution_id'],
-        }
+        verbose_name = 'details'
+        verbose_name_plural = 'details'
 
 
 class ImmediateContribution(BaseModel):
