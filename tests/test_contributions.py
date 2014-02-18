@@ -1,5 +1,6 @@
 import unittest
 import time
+from datetime import date
 
 try:
     from selenium import selenium
@@ -8,7 +9,7 @@ except ImportError:
 else:
     use_selenium = True
 
-from .resources import handler, User, Wallet, Contribution, get_bank_account
+from .resources import handler, User, Wallet, Contribution, get_bank_account, DetailPaymentCard
 
 
 class ContributionsTest(unittest.TestCase):
@@ -23,6 +24,16 @@ class ContributionsTest(unittest.TestCase):
                 self.selenium.start()
             except Exception:
                 use_selenium = False
+
+    def test_expiration_date_payment_card(self):
+        card = DetailPaymentCard(**{
+            'expiration_date': '0615',
+            'extended_card_country': 'FRA',
+            'number': '497783XXXXXX5774',
+            'type': 'CB'
+        })
+
+        self.assertEqual(card.expiration_date_converted, date(2015, 6, 1))
 
     def test_create_contribution(self):
         user = User(**{

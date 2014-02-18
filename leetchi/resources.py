@@ -1,3 +1,5 @@
+from datetime import date
+
 from .base import BaseApiModel
 
 from .fields import (PrimaryKeyField, EmailField, CharField,
@@ -215,6 +217,21 @@ class DetailPaymentCard(BaseApiModel):
     class Meta:
         verbose_name = 'details'
         verbose_name_plural = 'details'
+
+    @property
+    def expiration_date_converted(self):
+        if self.expiration_date and len(self.expiration_date) == 4:
+            now = date.today()
+
+            year = ('%s' % now.year)[:2] + self.expiration_date[2:]
+            month = self.expiration_date[:2]
+
+            try:
+                return date(int(year), int(month), 1)
+            except ValueError:
+                pass
+
+        return None
 
 
 class ImmediateContribution(BaseModel):
