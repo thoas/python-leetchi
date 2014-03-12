@@ -193,6 +193,7 @@ class Contribution(BaseModel):
     culture = CharField(api_name='Culture')
     answer_code = CharField(api_name='AnswerCode')
     answer_message = CharField(api_name='AnswerMessage')
+    payment_method_type = CharField(api_name='PaymentMethodType')
 
     class Meta:
         verbose_name = 'contribution'
