@@ -137,7 +137,7 @@ class LeetchiAPI(object):
         if result.status_code in (requests.codes.BAD_REQUEST, requests.codes.forbidden,
                                   requests.codes.not_allowed, requests.codes.length_required,
                                   requests.codes.server_error):
-            self._create_apierror(result, url=url)
+            self._create_apierror(result, url=url, data=data, method=method)
         else:
             if result.content:
                 try:
@@ -147,14 +147,17 @@ class LeetchiAPI(object):
             else:
                 self._create_decodeerror(result, url=url)
 
-    def _create_apierror(self, result, url=None):
+    def _create_apierror(self, result, url=None, data=None, method=None):
         text = result.text if hasattr(result, 'text') else result.content
 
         status_code = result.status_code
 
         headers = result.headers
 
-        logger.error(u'API ERROR: status_code: %s | headers: %s | content: %s' % (status_code,
+        logger.error(u'API ERROR: status_code: %s | url: %s | method: %s | data: %r | headers: %s | content: %s' % (status_code,
+                                                                                  url,
+                                                                                  method,
+                                                                                  data,
                                                                                   headers,
                                                                                   text))
 
