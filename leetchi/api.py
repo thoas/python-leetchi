@@ -20,6 +20,7 @@ from .signals import request_finished, request_started, request_error
 
 logger = logging.getLogger('leetchi')
 
+requests_session = requests.Session()
 
 def check_required(required, **kwargs):
     missing_requirements = []
@@ -111,7 +112,7 @@ class LeetchiAPI(object):
         request_started.send(url=url, data=data, headers=headers, method=method)
 
         try:
-            result = requests.request(method, url,
+            result = requests_session.request(method, url,
                                       headers=headers,
                                       data=data)
         except ConnectionError as e:
