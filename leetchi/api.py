@@ -24,7 +24,7 @@ logger = logging.getLogger('leetchi')
 def check_required(required, **kwargs):
     missing_requirements = []
     for requirement in required:
-        if not requirement in kwargs:
+        if requirement not in kwargs:
             missing_requirements.append(requirement)
 
     if len(missing_requirements):
@@ -134,9 +134,8 @@ class LeetchiAPI(object):
             result.text if hasattr(result, 'text') else result.content)
         )
 
-        if result.status_code in (requests.codes.BAD_REQUEST, requests.codes.forbidden,
-                                  requests.codes.not_allowed, requests.codes.length_required,
-                                  requests.codes.server_error):
+        if result.status_code not in (requests.codes.ok, requests.codes.not_found,
+                                      requests.codes.created, requests.codes.accepted):
             self._create_apierror(result, url=url)
         else:
             if result.content:
