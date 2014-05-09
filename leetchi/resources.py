@@ -203,6 +203,17 @@ class Contribution(BaseModel):
         return self.is_succeeded and self.is_completed
 
 
+class ContributionDetail(BaseModel):
+    card_number = CharField(api_name='CardName'),
+    card_type = CharField(api_name='CardType'),
+    card_expiration_date = CharField(api_name='CardExpiractionDate'),
+    extended_card_country = CharField(api_anem='ExtendedCardCountry')
+
+    class Meta:
+        verbose_name = 'detail'
+        verbose_name_plural = 'details'
+
+
 class ImmediateContribution(BaseModel):
     user = ForeignKeyField(User, api_name='UserID', required=True,
                            related_name='immediate_contributions')
