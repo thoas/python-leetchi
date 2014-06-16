@@ -20,6 +20,8 @@ from .signals import request_finished, request_started, request_error
 
 logger = logging.getLogger('leetchi')
 
+requests_session = requests.Session()
+
 
 def check_required(required, **kwargs):
     missing_requirements = []
@@ -111,9 +113,9 @@ class LeetchiAPI(object):
         request_started.send(url=url, data=data, headers=headers, method=method)
 
         try:
-            result = requests.request(method, url,
-                                      headers=headers,
-                                      data=data)
+            result = requests_session.request(method, url,
+                                              headers=headers,
+                                              data=data)
         except ConnectionError as e:
             raise APIError(e.message)
 
@@ -146,16 +148,21 @@ class LeetchiAPI(object):
             else:
                 self._create_decodeerror(result, url=url)
 
-    def _create_apierror(self, result, url=None):
+    def _create_apierror(self, result, url=None, data=None, method=None):
         text = result.text if hasattr(result, 'text') else result.content
 
         status_code = result.status_code
 
         headers = result.headers
 
-        logger.error(u'API ERROR: status_code: %s | headers: %s | content: %s' % (status_code,
-                                                                                  headers,
-                                                                                  text))
+        logger.error(u'API ERROR: status_code: %s | url: %s | method: %s | data: %r | headers: %s | content: %s' % (
+            status_code,
+            url,
+            method,
+            data,
+            headers,
+            text
+        ))
 
         request_error.send(url=url, status_code=status_code, headers=headers)
 

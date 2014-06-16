@@ -15,7 +15,7 @@ class BaseQuery(object):
         pairs = {}
         for api_name, field_name in self.get_field_transcription().items():
             field = self.model._meta.get_field_by_name(field_name)
-            if api_name in result:
+            if result and api_name in result:
                 pairs[field_name] = field.python_value(result[api_name])
 
         return pairs
