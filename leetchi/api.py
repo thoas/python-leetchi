@@ -138,7 +138,7 @@ class LeetchiAPI(object):
 
         if result.status_code not in (requests.codes.ok, requests.codes.not_found,
                                       requests.codes.created, requests.codes.accepted):
-            self._create_apierror(result, url=url)
+            self._create_apierror(result, url=url, data=data, method=method)
         else:
             if result.content:
                 try:
