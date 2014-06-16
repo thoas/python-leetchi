@@ -1,3 +1,38 @@
+0.3.8 - 2014-06-16
+==================
+
+- Add keep alive feature from requests to store
+  the http session (thanks to Stéphane Planquart)
+- Improve error logging (thanks to Stéphane Planquart)
+
+0.3.7 - 2014-04-23
+==================
+
+- Change the way we handle status codes and errors, reverse orders which only
+  returns pure objects when status are mostly ok
+
+0.3.6 - 2014-03-12
+==================
+
+- Add Contribution.payment_method_type missing property
+
+0.3.5 - 2014-02-18
+==================
+
+- Add DetailPaymentCard.expiration_date_converted property which translate
+  expiration_date format in pure date python object
+
+0.3.4 - 2014-01-30
+==================
+
+- Add DetailPaymentCard resource which is a OneToOne from Contribution to
+  retrieve payment card information
+
+0.3.2 - 2013-12-16
+==================
+
+- Fix AmountField when amount is None
+
 0.3.1 - 2013-11-14
 ==================
 
