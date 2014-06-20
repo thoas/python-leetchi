@@ -212,6 +212,8 @@ def force_bytes(s, encoding='utf-8', strings_only=False, errors='strict'):
                 return b' '.join([force_bytes(arg, encoding, strings_only,
                                               errors) for arg in s])
             return six.text_type(s).encode(encoding, errors)
+    else:
+        return s.encode(encoding, errors)
 
 
 if six.PY3:
