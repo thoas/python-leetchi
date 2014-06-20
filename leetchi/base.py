@@ -3,10 +3,9 @@ import six
 from copy import deepcopy
 
 from .fields import PrimaryKeyField, FieldDescriptor, Field
-
 from .query import UpdateQuery, InsertQuery, SelectQuery
-
 from .signals import pre_save, post_save
+from .utils import force_text, force_str
 
 
 class DoesNotExist(Exception):
@@ -47,7 +46,7 @@ class BaseModelOptions(object):
         self.options[k] = value
 
     def __delitem__(self, k):
-        if not k in self.options:
+        if k not in self.options:
             raise KeyError('%s does not exists' % k)
 
         del self.options[k]
@@ -88,7 +87,7 @@ class ApiObjectBase(type):
         if meta:
             meta_options.update((k, v) for k, v in meta.__dict__.items() if not k.startswith('_'))
 
-        if not 'urls' in meta_options:
+        if 'urls' not in meta_options:
             meta_options['urls'] = {}
 
         orig_primary_key = None
@@ -127,7 +126,7 @@ class ApiObjectBase(type):
             if isinstance(attr, PrimaryKeyField):
                 orig_primary_key = attr
 
-        if not orig_primary_key is None:
+        if orig_primary_key is not None:
             _meta.pk_name = orig_primary_key.name
 
         _meta.model_name = new_class.__name__
@@ -155,11 +154,11 @@ class BaseApiModel(object):
             u = six.text_type(self)
         except (UnicodeEncodeError, UnicodeDecodeError):
             u = '[Bad Unicode data]'
-        return '<%s: %s>' % (self.__class__.__name__, u)
+        return force_str('<%s: %s>' % (self.__class__.__name__, u))
 
     def __str__(self):
         if six.PY2 and hasattr(self, '__unicode__'):
-            return self.encode('utf-8')
+            return force_text(self).encode('utf-8')
 
         return '%s object' % self.__class__.__name__
 
