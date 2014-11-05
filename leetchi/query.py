@@ -41,6 +41,8 @@ class SelectQuery(BaseQuery):
         except APIError as e:
             if e.code == 404:
                 raise self.model.DoesNotExist('instance %s matching reference %d does not exist' % (self.model._meta.model_name, reference))
+
+            raise e
         else:
             return self.model(**dict(self.parse_result(data), **{'handler': handler}))
 
