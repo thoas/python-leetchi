@@ -6,7 +6,7 @@ from .fields import PrimaryKeyField, FieldDescriptor, Field
 from .query import UpdateQuery, InsertQuery, SelectQuery
 from .signals import pre_save, post_save
 from .utils import force_text, force_str
-from . import get_default_handler
+from .api import get_default_handler
 
 
 class DoesNotExist(Exception):
