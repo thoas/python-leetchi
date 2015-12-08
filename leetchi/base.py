@@ -170,7 +170,7 @@ class BaseApiModel(object):
 
     def save(self, handler=None, cls=None):
         if handler is None:
-            handler = getattr(self, 'handler', get_default_handler())
+            handler = self.handler or get_default_handler()
 
         field_dict = dict(self._data)
         field_dict.update(self.get_field_dict())
