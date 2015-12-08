@@ -2,8 +2,11 @@
 from __future__ import unicode_literals
 
 import six
+import datetime
 
 from decimal import Decimal
+
+from functools import wraps
 
 from Crypto.PublicKey import RSA
 from Crypto.Hash import SHA
@@ -18,11 +21,9 @@ elif six.PY2:
     orig = urllib.URLopener.open_https
     urllib.URLopener.open_https = orig
 
-import datetime
 
-
-def openssl_pkey_get_private(filename, password):
-    private_key = RSA.importKey(open(filename, 'r').read(), password)
+def openssl_pkey_get_private(private_key, password):
+    private_key = RSA.importKey(private_key, password)
 
     return private_key
 
@@ -220,3 +221,21 @@ if six.PY3:
     force_str = force_text
 else:
     force_str = force_bytes
+
+
+def memoize(func, cache, num_args):
+    """
+    Wrap a function so that results for any argument tuple are stored in
+    'cache'. Note that the args to the function must be usable as dictionary
+    keys.
+    Only the first num_args are considered when creating the key.
+    """
+    @wraps(func)
+    def wrapper(*args):
+        mem_args = args[:num_args]
+        if mem_args in cache:
+            return cache[mem_args]
+        result = func(*args)
+        cache[mem_args] = result
+        return result
+    return wrapper

@@ -14,13 +14,26 @@ except ImportError:
 
 from .exceptions import APIError, DecodeError
 
-from .utils import openssl_pkey_get_private, openssl_sign
+from .utils import openssl_pkey_get_private, openssl_sign, memoize
 
 from .signals import request_finished, request_started, request_error
 
 logger = logging.getLogger('leetchi')
 
 requests_session = requests.Session()
+
+
+def _get_default_handler():
+    import leetchi
+
+    return LeetchiAPI(partner_id=leetchi.partner_id,
+                      private_key=leetchi.private_key,
+                      private_key_path=leetchi.private_key_path,
+                      private_key_password=leetchi.private_key_password,
+                      host=leetchi.host,
+                      sandbox=leetchi.sandbox)
+
+get_default_handler = memoize(_get_default_handler, {}, 0)
 
 
 def check_required(required, **kwargs):
@@ -37,16 +50,20 @@ class LeetchiAPI(object):
     sandbox_host = 'http://api-preprod.leetchi.com'
     production_host = 'http://api.leetchi.com'
 
-    def __init__(self, partner_id, private_key, private_key_password, sandbox=False, host=None):
+    def __init__(self, partner_id, private_key_password, private_key=None,
+                 private_key_path=None, sandbox=False, host=None):
         self.partner_id = partner_id
 
-        if not os.path.exists(private_key):
-            raise Exception('Private key (%s) does not exist' % private_key)
+        if private_key_path is not None:
+            if not os.path.exists(private_key_path):
+                raise Exception('Private key (%s) does not exist' % private_key_path)
+
+            private_key = open(private_key_path, 'r').read()
 
         self.private_key = private_key
         self.private_key_password = private_key_password
 
-        if not host:
+        if host is None:
             if sandbox:
                 self.host = self.sandbox_host
             else:

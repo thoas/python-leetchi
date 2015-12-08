@@ -6,6 +6,7 @@ from .fields import PrimaryKeyField, FieldDescriptor, Field
 from .query import UpdateQuery, InsertQuery, SelectQuery
 from .signals import pre_save, post_save
 from .utils import force_text, force_str
+from . import get_default_handler
 
 
 class DoesNotExist(Exception):
@@ -169,7 +170,7 @@ class BaseApiModel(object):
 
     def save(self, handler=None, cls=None):
         if handler is None:
-            handler = self.handler
+            handler = getattr(self, 'handler', get_default_handler())
 
         field_dict = dict(self._data)
         field_dict.update(self.get_field_dict())
