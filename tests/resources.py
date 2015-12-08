@@ -5,8 +5,9 @@ from . import settings
 from leetchi.api import LeetchiAPI
 
 handler = LeetchiAPI(settings.API_PARTNER_ID,
-                     settings.API_PRIVATE_KEY,
-                     settings.API_PRIVATE_KEY_PASSWORD,
+                     private_key=settings.API_PRIVATE_KEY,
+                     private_key_path=settings.API_PRIVATE_KEY_PATH,
+                     private_key_password=settings.API_PRIVATE_KEY_PASSWORD,
                      sandbox=settings.API_USE_SANDBOX,
                      host=settings.API_HOST)
 
