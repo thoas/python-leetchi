@@ -204,6 +204,8 @@ class BaseApiModel(object):
 
     @classmethod
     def select(cls, *args, **kwargs):
+        kwargs.setdefault('handler', get_default_handler())
+
         return SelectQuery(cls, *args, **kwargs)
 
     @classmethod
@@ -215,10 +217,14 @@ class BaseApiModel(object):
 
     @classmethod
     def update(cls, reference, **query):
+        query.setdefault('handler', get_default_handler())
+
         return UpdateQuery(cls, reference, **query)
 
     @classmethod
     def insert(cls, **query):
+        query.setdefault('handler', get_default_handler())
+
         return InsertQuery(cls, **query)
 
     @classmethod

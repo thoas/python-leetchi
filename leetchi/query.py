@@ -4,12 +4,14 @@ from .exceptions import APIError
 
 
 class BaseQuery(object):
-    def __init__(self, model, method=None):
+    def __init__(self, model, method=None, **kwargs):
         self.model = model
         self.method = method
+        self.handler = kwargs.pop('handler', None)
 
     def get_field_transcription(self):
-        return dict((field.api_name, field.name) for field in self.model._meta.fields.values())
+        return dict((field.api_name, field.name)
+                    for field in self.model._meta.fields.values())
 
     def parse_result(self, result):
         pairs = {}
@@ -25,9 +27,11 @@ class SelectQuery(BaseQuery):
     identifier = 'SELECT'
 
     def __init__(self, model, *args, **kwargs):
-        super(SelectQuery, self).__init__(model, 'GET')
+        super(SelectQuery, self).__init__(model, 'GET', **kwargs)
 
-    def get(self, reference, handler, resource_model=None):
+    def get(self, reference, handler=None, resource_model=None):
+        handler = handler or self.handler
+
         try:
             if resource_model is None:
                 url = '/%s/%d' % (self.model._meta.verbose_name_plural,
@@ -46,7 +50,9 @@ class SelectQuery(BaseQuery):
         else:
             return self.model(**dict(self.parse_result(data), **{'handler': handler}))
 
-    def list(self, reference, resource_model, handler):
+    def list(self, reference, resource_model, handler=None):
+        handler = handler or self.handler
+
         result, data = handler.request(self.method,
                                        '/%s/%d/%s' % (resource_model._meta.verbose_name_plural, reference,
                                                       self.model._meta.verbose_name_plural))
@@ -58,8 +64,11 @@ class InsertQuery(BaseQuery):
     identifier = 'INSERT'
 
     def __init__(self, model, **kwargs):
+        super(InsertQuery, self).__init__(model, 'POST', **kwargs)
+
+        kwargs.pop('handler', None)
+
         self.insert_query = kwargs
-        super(InsertQuery, self).__init__(model, 'POST')
 
     def parse_insert(self):
         pairs = {}
@@ -71,7 +80,9 @@ class InsertQuery(BaseQuery):
 
         return pairs
 
-    def execute(self, handler):
+    def execute(self, handler=None):
+        handler = handler or self.handler
+
         data = self.parse_insert()
 
         url = self.model._meta.urls.get(self.identifier,
@@ -91,9 +102,12 @@ class UpdateQuery(BaseQuery):
     identifier = 'UPDATE'
 
     def __init__(self, model, reference, **kwargs):
+        super(UpdateQuery, self).__init__(model, 'PUT', **kwargs)
+
+        kwargs.pop('handler', None)
+
         self.update_query = kwargs
         self.reference = reference
-        super(UpdateQuery, self).__init__(model, 'PUT')
 
     def parse_update(self):
         pairs = {}
@@ -105,7 +119,9 @@ class UpdateQuery(BaseQuery):
 
         return pairs
 
-    def execute(self, handler):
+    def execute(self, handler=None):
+        handler = handler or self.handler
+
         data = self.parse_update()
 
         url = self.model._meta.urls.get(self.identifier,
