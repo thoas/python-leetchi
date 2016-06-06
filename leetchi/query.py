@@ -29,10 +29,10 @@ class SelectQuery(BaseQuery):
     def __init__(self, model, *args, **kwargs):
         super(SelectQuery, self).__init__(model, 'GET', **kwargs)
 
-    def get(self, reference, handler=None, resource_model=None):
+    def get(self, reference, handler=None, resource_model=None, url=None):
         handler = handler or self.handler
 
-        try:
+        if url is None:
             if resource_model is None:
                 url = '/%s/%d' % (self.model._meta.verbose_name_plural,
                                   reference)
@@ -41,21 +41,26 @@ class SelectQuery(BaseQuery):
                                      reference,
                                      self.model._meta.verbose_name_plural)
 
+        try:
             result, data = handler.request(self.method, url)
         except APIError as e:
             if e.code == 404:
                 raise self.model.DoesNotExist('instance %s matching reference %d does not exist' % (self.model._meta.model_name, reference))
-
             raise e
         else:
             return self.model(**dict(self.parse_result(data), **{'handler': handler}))
 
-    def list(self, reference, resource_model, handler=None):
+    def list(self, reference, resource_model, handler=None, url=None):
         handler = handler or self.handler
 
-        result, data = handler.request(self.method,
-                                       '/%s/%d/%s' % (resource_model._meta.verbose_name_plural, reference,
-                                                      self.model._meta.verbose_name_plural))
+        if url is None:
+            url = '/%s/%d/%s' % (
+                resource_model._meta.verbose_name_plural,
+                reference,
+                self.model._meta.verbose_name_plural)
+
+
+        result, data = handler.request(self.method, url)
 
         return [self.model(**dict(self.parse_result(entry), **{'handler': handler})) for entry in data]
 
