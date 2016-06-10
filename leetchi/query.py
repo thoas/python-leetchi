@@ -22,6 +22,17 @@ class BaseQuery(object):
 
         return pairs
 
+    def parse_url(self, meta_url, params=None):
+        if isinstance(meta_url, dict):
+            url = meta_url.get(self.identifier)
+        else:
+            url = meta_url
+
+        if params:
+            url = url % params
+
+        return url
+
 
 class SelectQuery(BaseQuery):
     identifier = 'SELECT'
@@ -29,17 +40,23 @@ class SelectQuery(BaseQuery):
     def __init__(self, model, *args, **kwargs):
         super(SelectQuery, self).__init__(model, 'GET', **kwargs)
 
-    def get(self, reference, handler=None, resource_model=None):
+    def get(self, reference, handler=None, resource_model=None, **kwargs):
         handler = handler or self.handler
 
+        url = getattr(self.model._meta, 'url', None)
+
+        if url is not None:
+            url = self.parse_url(url, kwargs)
+
         try:
-            if resource_model is None:
-                url = '/%s/%d' % (self.model._meta.verbose_name_plural,
-                                  reference)
-            else:
-                url = '/%s/%d/%s' % (resource_model._meta.verbose_name_plural,
-                                     reference,
-                                     self.model._meta.verbose_name_plural)
+            if url is None:
+                if resource_model is None:
+                    url = '/%s/%d' % (self.model._meta.verbose_name_plural,
+                                      reference)
+                else:
+                    url = '/%s/%d/%s' % (resource_model._meta.verbose_name_plural,
+                                         reference,
+                                         self.model._meta.verbose_name_plural)
 
             result, data = handler.request(self.method, url)
         except APIError as e:
@@ -85,11 +102,12 @@ class InsertQuery(BaseQuery):
 
         data = self.parse_insert()
 
-        url = self.model._meta.urls.get(self.identifier,
-                                        '/%s/' % self.model._meta.verbose_name_plural)
+        url = getattr(self.model._meta, 'url', None)
 
-        if callable(url):
-            url = url(self.insert_query)
+        if url:
+            url = self.parse_url(url, self.insert_query)
+        else:
+            url = '/%s/' % self.model._meta.verbose_name_plural
 
         result, data = handler.request(self.method,
                                        url,
@@ -124,12 +142,12 @@ class UpdateQuery(BaseQuery):
 
         data = self.parse_update()
 
-        url = self.model._meta.urls.get(self.identifier,
-                                        '/%s/%d/' % (self.model._meta.verbose_name_plural,
-                                                     self.reference))
+        url = getattr(self.model._meta, 'url', None)
 
-        if callable(url):
-            url = url(self.update_query, self.reference)
+        if url:
+            url = self.parse_url(url, self.update_query)
+        else:
+            url = '/%s/%d/' % (self.model._meta.verbose_name_plural, self.reference)
 
         result, data = handler.request(self.method,
                                        url,

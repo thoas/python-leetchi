@@ -9,7 +9,6 @@ from .fields import (PrimaryKeyField, EmailField, CharField,
 
 from .utils import Choices
 from .compat import python_2_unicode_compatible
-from .query import InsertQuery, UpdateQuery
 
 
 class BaseModel(BaseApiModel):
@@ -74,11 +73,7 @@ class StrongAuthentication(BaseModel):
     class Meta:
         verbose_name = 'strongAuthentication'
         verbose_name_plural = 'strongAuthentication'
-
-        urls = {
-            InsertQuery.identifier: lambda params: '/users/%s/strongAuthentication' % params['user_id'],
-            UpdateQuery.identifier: lambda params, reference: '/users/%s/strongAuthentication' % params['user_id']
-        }
+        url = '/users/%(user_id)s/strongAuthentication'
 
 
 @python_2_unicode_compatible
