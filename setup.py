@@ -36,7 +36,7 @@ setup(
     zip_safe=False,
     install_requires=[
         'distribute',
-        'requests==2.1.0',
+        'requests==2.20.0',
         'pycrypto==2.6.1',
         'blinker==1.2',
         'six==1.5.2'

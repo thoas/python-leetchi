@@ -1,4 +1,4 @@
-requests==1.2.3
+requests==2.20.0
 simplejson>=2.0.9
 pycrypto==2.6
 blinker==1.2
